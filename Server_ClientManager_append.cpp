@@ -142,7 +142,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
       return;
     }
     int p_key = get_key_by_ID(private_message_ID);
-    //Csession send Msg
+    //Csession send Msg수
     CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
     return;
   }
@@ -192,13 +192,16 @@ string ClientManager:: get_private_message_frame(string buf, string private_mess
 
 //전체채팅을 보내는 함수
 void ClientManager:: broadcast_Message(string Message, int index) {
-	int cnt=0;
-  for (int i=1; i<=number; i++) {
-		cnt
+	int cnt=0; //send number count variable 
+  for (int i=1; i<=MAXINST; i++) {
 		cout<<"_broadcast_Message_step"<<endl;
     //cout<<"_broadcast_Message_get_myID_"<<CSession[i]->get_myID()<<endl; 
     if ((CSession[i] != NULL) && (CSession[i]->get_myID().compare(CSession[index]->get_myID())!=0)) {
+			cnt++;
       CSession[i]->sendMsg(Message);
+			if (cnt == number-1) { // to compare send number with client number except my_index
+				break;
+			}
     }
 		else {
 			cout<<"broadcast_Message NULL number"<<i<<endl;
@@ -210,7 +213,7 @@ void ClientManager:: broadcast_Message(string Message, int index) {
 //찾으려는 id를 가지고 있는 CSession array의 index 반환
 int ClientManager:: get_key_by_ID(string ID) {
   //cout<<"_get_key_by_ID_"<<ID<<endl;
-  for (int i=1; i<=number; i++) {
+  for (int i=1; i<=MAXINST; i++) {
     if ((CSession[i] != NULL) && (CSession[i]->get_myID().compare(ID)==0)) {
       return i;
     }
