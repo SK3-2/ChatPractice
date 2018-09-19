@@ -24,35 +24,24 @@ ClientManager::ClientManager(){
 ClientManager::ClientManager(PollManager* ptr_t){
 	CSession[0]= new ClientSession();
 	pmptr=ptr_t;
-	cout<<"CM 생성자 호출 완료"<<endl;
-	cout<<CSession[0]->get_mysd()<<endl;
-	cout<<CSession[0]->get_myID()<<endl;
 }
 
 
 // Respond to POLL
 void ClientManager::respond_Poll(int my_index, int sd, int N){
-	cout<<"respond_Poll executed "<<N<<endl;
 	buf="";
-
 	if (N==0) { // 등록시 sd를 CSession[0]에 등록
-		cout<<"recv"<<endl;
 		CSession[0]->set_mysd(sd);
 		buf = CSession[0]->recvMsg();
 	}
 	else { // 대화말이 들어오면 CSession[index] recvMsg 호출
-		cout<<"Conversation "<<N<<endl;
 		buf = CSession[my_index]->recvMsg();
 	}
 
 	switch(int k=Parser(buf, this)) {
-		case 0: {
+		case 0: {	//id 중복체크 후 중복이면 close socket	
 							int n;
-							//id 중복체크	
-							cout<<"id check"<<endl;
-							cout<<buf<<endl;
 							if((n=get_key_by_ID(buf.substr(4))) != 0) {
-								cout<<"no"<<endl;
 								CSession[0]->sendMsg("no");//중복이면 no 전달
 								CSession[0]->set_myID("");
 								CSession[0]->set_mysd(-1);
@@ -61,17 +50,15 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 							return;
 							break;
 						}
-		case 1: {
-							cout<<"yes"<<endl;
+		case 1: {	//id 중복체크 후 중복이 아니면 ClientSession 등록, 전체 Client number 증가
 							CSession[0]->sendMsg("yes");//중복이 아니면 yes 전달 / 아직 등록되지 않았으므로 
 							//CSession[0]의 sd로 보냄
 							CSession[my_index] = new ClientSession(my_index,sd,buf.substr(4));
-							cout<<"id registration complete"<<endl;
 							number++;
 							return;
 							break;
 						}
-		case 2: {
+		case 2: { //귓속말 보내기, 보낸 상대의 ID와 받을 상대의 Client의 sd를 가져와 명령 수행
 							if ((private_message_ID = get_private_message_ID(buf))=="") {
 								perror("error");
 								return;
@@ -82,8 +69,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 							return;
 							break;
 						}
-		case 3: {
-							cout<<"ClientSession 종료"<<endl;
+		case 3: { //Client 종료, 종료메시지를 나머지 Client에게 전달하고, close socket 및 number 감소
 							broadcast_Message(get_bye_message_frame(my_index),my_index);
 							CSession[my_index]->set_myID("");
 							CSession[my_index]->set_mysd(-1);
@@ -94,8 +80,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 							return;
 							break;
 						}
-		case 4: {
-							cout<<"전체채팅"<<endl;
+		case 4: { //전체채팅 보내기, 보낸 상대의 ID를 가져와 나머지 Client들의 sd를 가져와 명령 수행
 							broadcast_Message(get_broadcast_message_frame(buf,my_index),my_index);
 							return;
 							break;
@@ -105,7 +90,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 	}
 }
 
-//들어온 귓속말 buf에서 private ID extract
+//귓속말 buf에서 private ID extract
 string ClientManager::get_private_message_ID(string msg) {
 	int index = msg.find(" ");
 	return msg.substr(1,index-1);
@@ -124,7 +109,6 @@ ClientSession* ClientManager:: get_session_end() {
 //Client가 나갈 때, 나가는 Client의 ID를 이용해 bye message frame을 만듦
 string ClientManager:: get_bye_message_frame(int index) {
 	string frame = "[" + CSession[index]->get_myID() + "]님이 티맥스 대화방을 나가셨습니다.\n";
-	cout<<"_get_bye_message_frame_"<<endl;
 	return frame;
 }
 
@@ -146,8 +130,6 @@ string ClientManager:: get_private_message_frame(string buf, string private_mess
 
 //전체채팅을 보내는 함수
 void ClientManager:: broadcast_Message(string Message, int index) {
-	cout<<"_broadcast_Message_step"<<endl;
-
 	int cnt=0; //send number count variable 
 	for (int i=1; i<=MAXINST-1; i++) {
 		if (number == 0) break;
@@ -165,7 +147,6 @@ void ClientManager:: broadcast_Message(string Message, int index) {
 
 //찾으려는 id를 가지고 있는 CSession array의 index 반환
 int ClientManager:: get_key_by_ID(string ID) {
-	//cout<<"_get_key_by_ID_"<<ID<<endl;
 	for (int i=1; i<=MAXINST-1; i++) {
 		if ((CSession[i] != NULL) && (CSession[i]->get_myID().compare(ID)==0)) {
 			return i;
