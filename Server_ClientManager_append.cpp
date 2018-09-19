@@ -17,59 +17,6 @@
 
 using namespace std;
 
-//ClientSession 생성자 함수
-ClientSession::ClientSession() : index(-1), mysd(-1){
-	strcpy(buftemp,"");
-};
-ClientSession::ClientSession(int index_t, int sd) : index(index_t), mysd(sd){
-	strcpy(buftemp,"");
-};
-ClientSession::ClientSession(int index_t, int sd, string myID_t) : index(index_t), mysd(sd) {
-	myID=myID_t;
-	strcpy(buftemp,"");
-};
-//ClientSession 소멸자 함
-ClientSession::~ClientSession() {
-	cout<<"소멸자 실행"<<endl;
-}
-//recvMsg
-string ClientSession::recvMsg() {
-	strcpy(buftemp,""); //buf 초기화
-	cout<<"recvMsg stage1"<<endl;
-	int ret = recv(this->mysd, buftemp, sizeof(buftemp), 0);
-	return buftemp;
-}
-//sendMsg
-int ClientSession::sendMsg(string buf) {
-	int n;
-	strcpy(buftemp,buf.c_str());
-	cout<<"_sendMSG_buftemp_"<<buftemp<<endl;
-	//cout<<sizeof(buftemp)<<endl;
-	buftemp[BUFMAX-1]='\0';
-	if((n = send(mysd,buftemp,sizeof(buftemp),0)) < buf.length()) {
-		cout<<"Msg buffer is not fully sent!"<<endl;
-		return -1;
-	}
-	strcpy(buftemp,"");
-	return 0;
-}
-//ClientSession get ID
-string ClientSession::get_myID() {
-	return myID;
-}
-//ClientSession set ID
-void ClientSession::set_myID(string ID) {
-	this->myID=ID;
-}
-//ClientSession get sd
-int ClientSession::get_mysd() {
-	return mysd;
-}
-// ClientSession set sd
-void ClientSession::set_mysd(int mysd_t) {
-	this->mysd=mysd_t;
-}
-
 //ClientManager 생성자 함수
 ClientManager::ClientManager(){
 	CSession[0]= new ClientSession();
@@ -87,6 +34,7 @@ ClientManager::ClientManager(PollManager* ptr_t){
 void ClientManager::respond_Poll(int my_index, int sd, int N){
 	cout<<"respond_Poll executed "<<N<<endl;
 	buf="";
+
 	if (N==0) { // 등록시 sd를 CSession[0]에 등록
 		cout<<"recv"<<endl;
 		CSession[0]->set_mysd(sd);
@@ -96,56 +44,65 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 		cout<<"Conversation "<<N<<endl;
 		buf = CSession[my_index]->recvMsg();
 	}
-	// ClientSession 종료, 나가기
-	if (buf.empty() == 1){ //EOF가 NULL로 생각
-		cout<<"ClientSession 종료"<<endl;
-		broadcast_Message(get_bye_message_frame(my_index),my_index);
-		CSession[my_index]->set_myID("");
-		CSession[my_index]->set_mysd(-1);
-		delete CSession[my_index];
-		number--;
-		CSession[my_index]=NULL;
-		pmptr->close_Pollfd(my_index);
-		return;
-	}
 
-	// id 등록 확인
-	if (buf.compare(0,3,"/id") == 0){
-		int n;
-		//id 중복체크	
-		cout<<"id check"<<endl;
-		cout<<buf<<endl;
-		if((n=get_key_by_ID(buf.substr(4))) != 0) {
-			cout<<"no"<<endl;
-			CSession[0]->sendMsg("no");//중복이면 no 전달
-			CSession[0]->set_myID("");
-			CSession[0]->set_mysd(-1);
-			pmptr->close_Pollfd(my_index);//PollManager close socket 
-			return;
-		}
-		cout<<"yes"<<endl;
-		CSession[0]->sendMsg("yes");//중복이 아니면 yes 전달 / 아직 등록되지 않았으므로 
-		//CSession[0]의 sd로 보냄
-		CSession[my_index] = new ClientSession(my_index,sd,buf.substr(4));
-		cout<<"id registration complete"<<endl;
-		number++;
-		return;
+	switch(int k=Parser(buf, this)) {
+		case 0: {
+							int n;
+							//id 중복체크	
+							cout<<"id check"<<endl;
+							cout<<buf<<endl;
+							if((n=get_key_by_ID(buf.substr(4))) != 0) {
+								cout<<"no"<<endl;
+								CSession[0]->sendMsg("no");//중복이면 no 전달
+								CSession[0]->set_myID("");
+								CSession[0]->set_mysd(-1);
+								pmptr->close_Pollfd(my_index);//PollManager close socket 
+							}
+							return;
+							break;
+						}
+		case 1: {
+							cout<<"yes"<<endl;
+							CSession[0]->sendMsg("yes");//중복이 아니면 yes 전달 / 아직 등록되지 않았으므로 
+							//CSession[0]의 sd로 보냄
+							CSession[my_index] = new ClientSession(my_index,sd,buf.substr(4));
+							cout<<"id registration complete"<<endl;
+							number++;
+							return;
+							break;
+						}
+		case 2: {
+							if ((private_message_ID = get_private_message_ID(buf))=="") {
+								perror("error");
+								return;
+							}
+							int p_key = get_key_by_ID(private_message_ID);
+							//Csession send Msg수
+							CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
+							return;
+							break;
+						}
+		case 3: {
+							cout<<"ClientSession 종료"<<endl;
+							broadcast_Message(get_bye_message_frame(my_index),my_index);
+							CSession[my_index]->set_myID("");
+							CSession[my_index]->set_mysd(-1);
+							delete CSession[my_index];
+							number--;
+							CSession[my_index]=NULL;
+							pmptr->close_Pollfd(my_index);
+							return;
+							break;
+						}
+		case 4: {
+							cout<<"전체채팅"<<endl;
+							broadcast_Message(get_broadcast_message_frame(buf,my_index),my_index);
+							return;
+							break;
+						}
+		default:
+						return;
 	}
-
-	// 귓속말인지 확인
-	if (buf.compare(0,1,"@") ==0){
-		if ((private_message_ID = get_private_message_ID(buf))=="") {
-			perror("error");
-			return;
-		}
-		int p_key = get_key_by_ID(private_message_ID);
-		//Csession send Msg수
-		CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
-		return;
-	}
-
-	cout<<"전체채팅"<<endl;
-	broadcast_Message(get_broadcast_message_frame(buf,my_index),my_index);
 }
 
 //들어온 귓속말 buf에서 private ID extract
@@ -195,7 +152,7 @@ void ClientManager:: broadcast_Message(string Message, int index) {
 	for (int i=1; i<=MAXINST-1; i++) {
 		if (number == 0) break;
 		if ((CSession[i] != NULL) &&\
-		(CSession[i]->get_myID().compare(CSession[index]->get_myID())!=0)) {
+				(CSession[i]->get_myID().compare(CSession[index]->get_myID())!=0)) {
 			cnt++;
 			CSession[i]->sendMsg(Message);
 			if (cnt == number-1) { // to compare send number with client number except my_index

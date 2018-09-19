@@ -87,4 +87,4 @@ class PollManager{
     void close_Pollfd(int); //public
 };
 
-
+int Parser(string, ClientManager*);
