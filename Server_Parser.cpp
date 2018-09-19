@@ -14,12 +14,12 @@ int Parser(string buf,ClientManager* cmptr) {
 	if (buf.compare(0,1,"@") ==0) {                                                         
 		return 2;                                                                        
 	}                                                                                      
-	// ClientSession 종료 요청일 경우, return 3                                                    
+	// ClientSession 종료 요청일 경우, return 3                                                 
 	if (buf.empty() == 1) {                                       
 		return 3;                                                                        
 	}                                                                                
 	// ClientSession font color 바꾸기 
-	if (buf.compare(0,6,"/color") ==0) {
+	if (buf.compare(0+7,6,"/color") ==0) {
 		return 4;
 	}
 	// 전체채팅 요청일 경우, return 4

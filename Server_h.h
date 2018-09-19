@@ -37,7 +37,7 @@ class ClientSession{
 		void set_myID(string);
     int get_mysd();
 		void set_mysd(int);
-		void set colorbuf(string);///수정 필요
+		void set_colorbuf(string);///수정 필요
 };                                
 
 
