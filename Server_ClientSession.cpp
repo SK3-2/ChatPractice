@@ -15,13 +15,31 @@ ClientSession::ClientSession(int index_t, int sd, string myID_t) : index(index_t
 ClientSession::~ClientSession() {
 	cout<<"소멸자 실행"<<endl;
 }
+
+
+void ClientSession::set_Color(int ncolor) { 
+  color = ncolor;
+  return
+}
+
+
+string ClientSession::get_FontFrame(int color)
+{
+  string cbuf = "\33[1;";
+  cbuf += to_string(color);
+  cbuf += "m";
+  return cbuf;
+}
+
+
 //recvMsg
 string ClientSession::recvMsg() {
 	strcpy(buftemp,""); //buf 초기화
 	cout<<"recvMsg stage1"<<endl;
 	int ret = recv(this->mysd, buftemp, sizeof(buftemp), 0);
-	return buftemp;
+	return get_FontFrame(this->color)+buftemp;
 }
+
 //sendMsg
 int ClientSession::sendMsg(string buf) {
 	int n;
