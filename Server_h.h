@@ -24,11 +24,13 @@ class ClientSession{
   private:
     int index;
     int mysd;
-		string myID="";
+    string myID="";
     char buftemp[BUFMAX];
+    int color;
   public:
-		ClientSession();
-		~ClientSession();
+    ClientSession();
+    ~ClientSession();
+    void set_Color(int);
     ClientSession(int, int);
     ClientSession(int, int, string);
     string recvMsg();
@@ -87,4 +89,4 @@ class PollManager{
     void close_Pollfd(int); //public
 };
 
-
+int Parser(string, ClientManager*);
