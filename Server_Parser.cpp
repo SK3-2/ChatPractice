@@ -18,6 +18,10 @@ int Parser(string buf,ClientManager* cmptr) {
 	if (buf.empty() == 1) {                                       
 		return 3;                                                                        
 	}                                                                                
+	// ClientSession font color 바꾸기 
+	if (buf.compare(0,6,"/color") ==0) {
+		return 4;
+	}
 	// 전체채팅 요청일 경우, return 4
-	return 4;
+	return 5;
 }

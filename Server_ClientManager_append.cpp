@@ -80,7 +80,10 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 							return;
 							break;
 						}
-		case 4: { //전체채팅 보내기, 보낸 상대의 ID를 가져와 나머지 Client들의 sd를 가져와 명령 수행
+		case 4: {
+							CSession[i]->se
+						}
+		case 5: { //전체채팅 보내기, 보낸 상대의 ID를 가져와 나머지 Client들의 sd를 가져와 명령 수행
 							broadcast_Message(get_broadcast_message_frame(buf,my_index),my_index);
 							return;
 							break;
