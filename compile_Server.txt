@@ -1,0 +1,1 @@
+g++ -o Server Server_ClientManager_append.cpp Server_PollManager.cpp Server_main.cpp Server_h.h Server_Parser.cpp Server_ClientSession.cpp
