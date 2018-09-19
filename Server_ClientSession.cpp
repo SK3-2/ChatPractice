@@ -19,7 +19,7 @@ ClientSession::~ClientSession() {
 
 void ClientSession::set_Color(int ncolor) { 
   color = ncolor;
-  return
+  return;
 }
 
 
