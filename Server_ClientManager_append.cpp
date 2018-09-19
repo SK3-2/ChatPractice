@@ -19,7 +19,7 @@ using namespace std;
 
 //ClientManager 생성자 함수
 ClientManager::ClientManager(){
-	CSession[0]= new ClientSession();
+  CSession[0]= new ClientSession();
 }
 ClientManager::ClientManager(PollManager* ptr_t){
 	CSession[0]= new ClientSession();
@@ -29,6 +29,7 @@ ClientManager::ClientManager(PollManager* ptr_t){
 
 // Respond to POLL
 void ClientManager::respond_Poll(int my_index, int sd, int N){
+
 	buf="";
 	if (N==0) { // 등록시 sd를 CSession[0]에 등록
 		CSession[0]->set_mysd(sd);
@@ -96,44 +97,46 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 
 //귓속말 buf에서 private ID extract
 string ClientManager::get_private_message_ID(string msg) {
-	int index = msg.find(" ");
-	return msg.substr(1,index-1);
+  int index = msg.find(" ");
+  return msg.substr(1,index-1);
 }
 
 //처음 등록시 들어오는 buf로부터 registration ID extract
 string ClientManager::get_registration_ID(string msg) {
-	return msg.substr(4);
+  return msg.substr(4);
 }
 
 //CSession array의 마지막 주소 반환
 ClientSession* ClientManager:: get_session_end() {
-	return CSession[MAXINST-1];
+  return CSession[MAXINST-1];
 }
 
 //Client가 나갈 때, 나가는 Client의 ID를 이용해 bye message frame을 만듦
 string ClientManager:: get_bye_message_frame(int index) {
+
 	string frame = "[" + CSession[index]->get_myID() + "]님이 티맥스 대화방을 나가셨습니다.\n";
 	return frame;
 }
 
 //Client가 전체채팅을 할 때, Client의 ID를 이용해 braodcast message frame을 만듦
 string ClientManager:: get_broadcast_message_frame(string convs, int index) {
-	string frame = "[" + CSession[index]->get_myID() + "] ";
-	frame.append(convs);
-	return frame;
+  string frame = "[" + CSession[index]->get_myID() + "] ";
+  frame.append(convs);
+  return frame;
 }
 
 //Client가 귓속말을 할 때, Client의 ID를 이용해 private message frame을 만듦
 string ClientManager:: get_private_message_frame(string buf, string private_message_ID, int index) {
-	string DM = "[DM] ";
-	string myname = CSession[index]->get_myID();
-	string msg_convs = buf.substr(private_message_ID.length()+2);
-	DM.append(myname).append(": ").append(msg_convs);
-	return DM;
+  string DM = "[DM] ";
+  string myname = CSession[index]->get_myID();
+  string msg_convs = buf.substr(private_message_ID.length()+2);
+  DM.append(myname).append(": ").append(msg_convs);
+  return DM;
 }
 
 //전체채팅을 보내는 함수
 void ClientManager:: broadcast_Message(string Message, int index) {
+
 	int cnt=0; //send number count variable 
 	for (int i=1; i<=MAXINST-1; i++) {
 		if (number == 0) break;
@@ -147,10 +150,12 @@ void ClientManager:: broadcast_Message(string Message, int index) {
 		}
 	}
 	return;
+
 }
 
 //찾으려는 id를 가지고 있는 CSession array의 index 반환
 int ClientManager:: get_key_by_ID(string ID) {
+
 	for (int i=1; i<=MAXINST-1; i++) {
 		if ((CSession[i] != NULL) && (CSession[i]->get_myID().compare(ID)==0)) {
 			return i;
