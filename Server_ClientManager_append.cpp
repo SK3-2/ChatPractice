@@ -80,7 +80,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 							return;
 							break;
 						}
-		case 4: {
+		case 4: { //Client font color 바꾸기
 							int C = atoi(buf.substr(7,2).c_str());
 							CSession[my_index]->set_Color(C);
 						}
