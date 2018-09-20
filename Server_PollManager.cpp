@@ -103,11 +103,11 @@ void PollManager::do_Poll(void){
       int EmptyPfdIndex = get_EmptyPfdIndex();
       int nfd = accept_Pollfd(serverfd);	 
       g_pollfd[EmptyPfdIndex].fd = nfd; // Save new client's sd in emptypfdindex	 
-      cmptr->respond_Poll(EmptyPfdIndex, nfd, 0);
+      cmptr->respond_Poll(EmptyPfdIndex, nfd);
     } // 
     else if(index > 0){
       cout<<"Client Socket Event Occur!"<<endl;
-      cmptr->respond_Poll(index,cur->fd,1); 
+      cmptr->respond_Poll(index,cur->fd); 
     }
     else{
       cout<<"Wrong Index Input Error: sd "<<cur->fd<<endl;      
