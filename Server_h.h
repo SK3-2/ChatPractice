@@ -60,7 +60,6 @@ class ClientManager{
 		void broadcast_Message(string, int);
     string get_private_message_ID(string);  
 		string get_registration_ID(string);
-    ClientSession* get_session_end();             
     int get_key_by_ID(string);                    
 		string get_bye_message_frame(int);
 		string get_broadcast_message_frame(string, int);
