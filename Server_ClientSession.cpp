@@ -35,15 +35,21 @@ string ClientSession::get_FontFrame(int color)
 string ClientSession::recvMsg() {
 	strcpy(buftemp,""); //buf 초기화
 	cout<<"recvMsg stage1"<<endl;
+
+	  
 	int ret = recv(this->mysd, buftemp, sizeof(buftemp), 0);
+	
+	if(buftemp[0] == '/') return buftemp;
 	return buftemp+get_FontFrame(this->color);
+
+
 }
 
 //sendMsg
 int ClientSession::sendMsg(string buf) {
 	int n;
 	int size = buf.length();
-	
+
 	if(buf.compare(0,1,"@")==0){
 	  buf = buf.substr(1);
 	}
