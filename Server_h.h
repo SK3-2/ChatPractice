@@ -26,7 +26,7 @@ class ClientSession{
     int mysd;
     string myID="";
     char buftemp[BUFMAX];
-    int color;
+    int color = 37;
   public:
     ClientSession();
     ~ClientSession();
@@ -35,11 +35,11 @@ class ClientSession{
     ClientSession(int, int, string);
     string recvMsg();
     int sendMsg(string);
+    string get_FontFrame(int);
     string get_myID();
 		void set_myID(string);
     int get_mysd();
 		void set_mysd(int);
-		void set_colorbuf(string);///수정 필요
 };                                
 
 
