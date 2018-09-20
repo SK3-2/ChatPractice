@@ -42,11 +42,15 @@ string ClientSession::recvMsg() {
 //sendMsg
 int ClientSession::sendMsg(string buf) {
 	int n;
-	
+	int size = buf.length();
+	if(buf.compare(0,1,"@")==0){
+	  buf = buf.substr(1);
+	}
+	else{
 	//put colorbuf in front of Msgbuf
-	ssize_t size = buf.length();
 	string colorbuf = buf.substr(size-7);
 	buf = colorbuf + buf.substr(0,size-7);
+	}
 
 	strcpy(buftemp,buf.c_str());
 	//cout<<"_sendMSG_buftemp_"<<buftemp<<endl;

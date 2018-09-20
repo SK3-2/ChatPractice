@@ -30,73 +30,75 @@ ClientManager::ClientManager(PollManager* ptr_t){
 // Respond to POLL
 void ClientManager::respond_Poll(int my_index, int sd, int N){
 
-	buf="";//buf 초기화
-	if (N==0) { // 등록시 sd를 CSession[index]에 등록 및 number++
-		CSession[my_index] = new ClientSession(my_index,sd);
-		buf = CSession[my_index]->recvMsg();
-		number++;
-	}
-	else { // 대화말이 들어오면 CSession[index] recvMsg 호출
-		buf = CSession[my_index]->recvMsg();
-	}
+  buf="";//buf 초기화
+  if (N==0) { // 등록시 sd를 CSession[index]에 등록 및 number++
+    CSession[my_index] = new ClientSession(my_index,sd);
+    buf = CSession[my_index]->recvMsg();
+    number++;
+  }
+  else { // 대화말이 들어오면 CSession[index] recvMsg 호출
+    buf = CSession[my_index]->recvMsg();
+  }
 
-	switch(int k=Parser(buf, this)) {
-		case 0: {	//id 중복체크 후 중복이면 close socket	
-							int n;
-							if((n=get_key_by_ID(get_registration_ID(buf)) != 0)) {
-								CSession[my_index]->sendMsg("no");//중복이면 no 전달
-								CSession[my_index]->set_myID("");
-								CSession[my_index]->set_mysd(-1);
-								delete CSession[my_index];
-								CSession[my_index]=NULL;
-								pmptr->close_Pollfd(my_index);//PollManager close socket 
-								number--;
-							}
-							return;
-							break;
-						}
-		case 1: {	//id 중복체크 후 중복이 아니면 CSession[index]에 ID 등록
-							CSession[my_index]->set_myID(get_registration_ID(buf));
-							CSession[my_index]->sendMsg("yes");//중복이 아니면 yes 전달 
-							return;
-							break;
-						}
-		case 2: { //귓속말 보내기, 받을 상대(CSession[index])의\
-							ID와 받을 상대(CSession[index])의 sd를 가져와 명령 수행
-							if ((private_message_ID = get_private_message_ID(buf))=="") {
-								perror("error");
-								return;
-							}
-							int p_key = get_key_by_ID(private_message_ID);
-							//Csession send Msg수
-							CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
-							return;
-							break;
-						}
-		case 3: { //Client 종료, 종료메시지를 나머지 Client에게 전달하고, close socket 및 number 감소
-							broadcast_Message(get_bye_message_frame(my_index),my_index);
-							CSession[my_index]->set_myID("");
-							CSession[my_index]->set_mysd(-1);
-							delete CSession[my_index];
-							number--;
-							CSession[my_index]=NULL;
-							pmptr->close_Pollfd(my_index);
-							return;
-							break;
-						}
-		case 4: { //Client font color 바꾸기
-							int C = atoi(buf.substr(7,2).c_str());
-							CSession[my_index]->set_Color(C);
-						}
-		case 5: { //전체채팅 보내기, (CSession[my_index])의 ID와 buf를 가져와\
-							나머지 CSession들의 sd로 sendMsg
-							broadcast_Message(get_broadcast_message_frame(buf,my_index),my_index);
-							return;
-							break;
-						}
-		default:
-						return;
-	}
+  switch(int k=Parser(buf, this)) {
+    case 0: {	//id 중복체크 후 중복이면 close socket	
+	      int n;
+	      if((n=get_key_by_ID(get_registration_ID(buf)) != 0)) {
+		CSession[my_index]->sendMsg("no");//중복이면 no 전달
+		CSession[my_index]->set_myID("");
+		CSession[my_index]->set_mysd(-1);
+		delete CSession[my_index];
+		CSession[my_index]=NULL;
+		pmptr->close_Pollfd(my_index);//PollManager close socket 
+		number--;
+	      }
+	      return;
+	      break;
+	    }
+    case 1: {	//id 중복체크 후 중복이 아니면 CSession[index]에 ID 등록
+	      CSession[my_index]->set_myID(get_registration_ID(buf));
+	      CSession[my_index]->sendMsg("@yes");//중복이 아니면 yes 전달 
+	      return;
+	      break;
+	    }
+    case 2: { //귓속말 보내기, 받을 상대(CSession[index])의\
+	      ID와 받을 상대(CSession[index])의 sd를 가져와 명령 수행
+		if ((private_message_ID = get_private_message_ID(buf))=="") {
+		  perror("error");
+		  return;
+		}
+	      int p_key = get_key_by_ID(private_message_ID);
+	      //Csession send Msg수
+	      CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
+	      return;
+	      break;
+	    }
+    case 3: { //Client 종료, 종료메시지를 나머지 Client에게 전달하고, close socket 및 number 감소
+	      broadcast_Message(get_bye_message_frame(my_index),my_index);
+	      CSession[my_index]->set_myID("");
+	      CSession[my_index]->set_mysd(-1);
+	      delete CSession[my_index];
+	      number--;
+	      CSession[my_index]=NULL;
+	      pmptr->close_Pollfd(my_index);
+	      return;
+	      break;
+	    }
+    case 4: { //Client font color 바꾸기
+	      int C = atoi(buf.substr(7,2).c_str());
+	      CSession[my_index]->set_Color(C);
+	      return;
+	      break;
+	    }
+    case 5: { //전체채팅 보내기, (CSession[my_index])의 ID와 buf를 가져와\
+	      나머지 CSession들의 sd로 sendMsg
+		broadcast_Message(get_broadcast_message_frame(buf,my_index),my_index);
+	      return;
+	      break;
+	    }
+    default:
+	    return;
+  }
 
 }
 
@@ -120,8 +122,12 @@ string ClientManager:: get_bye_message_frame(int index) {
 
 //Client가 전체채팅을 할 때, Client의 ID를 이용해 braodcast message frame을 만듦
 string ClientManager:: get_broadcast_message_frame(string convs, int index) {
-  string frame = "[" + CSession[index]->get_myID() + "] ";
+
+  string nid = CSession[index]->get_myID();
+  string frame = "[" + nid;
+  frame += "] ";
   frame.append(convs);
+  cout<<"_get_broadcast_msg_"<<frame<<endl;
   return frame;
 }
 

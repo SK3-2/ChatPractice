@@ -9,7 +9,13 @@ int main(void){
 
 int color = 33;
 
- string buf ="Hello";
+// string buf ="[]Hello[123123]12312312";
+
+ string id = "kim";
+
+ string buf = "[" + id + "]";  
+ buf += "dfdfdadf";
+
  string cbuf = "\33[1;";
  cbuf += to_string(33);
 
