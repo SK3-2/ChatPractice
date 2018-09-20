@@ -42,7 +42,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 	switch(int k=Parser(buf, this)) {
 		case 0: {	//id 중복체크 후 중복이면 close socket	
 							int n;
-							if((n=get_key_by_ID(buf.substr(4))) != 0) {
+							if((n=get_key_by_ID(get_registration_ID(buf)) != 0)) {
 								CSession[0]->sendMsg("no");//중복이면 no 전달
 								CSession[0]->set_myID("");
 								CSession[0]->set_mysd(-1);
@@ -54,7 +54,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 		case 1: {	//id 중복체크 후 중복이 아니면 ClientSession 등록, 전체 Client number 증가
 							CSession[0]->sendMsg("yes");//중복이 아니면 yes 전달 / 아직 등록되지 않았으므로 
 							//CSession[0]의 sd로 보냄
-							CSession[my_index] = new ClientSession(my_index,sd,buf.substr(4));
+							CSession[my_index] = new ClientSession(my_index,sd,get_registration_ID(buf));
 							number++;
 							return;
 							break;
@@ -104,11 +104,6 @@ string ClientManager::get_private_message_ID(string msg) {
 //처음 등록시 들어오는 buf로부터 registration ID extract
 string ClientManager::get_registration_ID(string msg) {
   return msg.substr(4);
-}
-
-//CSession array의 마지막 주소 반환
-ClientSession* ClientManager:: get_session_end() {
-  return CSession[MAXINST-1];
 }
 
 //Client가 나갈 때, 나가는 Client의 ID를 이용해 bye message frame을 만듦
