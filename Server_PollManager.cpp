@@ -25,9 +25,9 @@ int PollManager::register_ClientManager(ClientManager* ptr){
   if(ptr == NULL)
     return -1;
   cmptr = (ClientManager*)ptr;
-  cout<<"CM 등록"<<endl;
-  cout<<cmptr->CSession[0]->get_mysd()<<endl;
-  cout<<cmptr->CSession[0]->get_myID()<<endl;	
+// cout<<"CM 등록"<<endl;
+//  cout<<cmptr->CSession[0]->get_mysd()<<endl;
+//  cout<<cmptr->CSession[0]->get_myID()<<endl;	
   return 0;
 }
 
