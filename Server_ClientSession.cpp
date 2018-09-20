@@ -1,12 +1,10 @@
 #include "Server_h.h"
 
 //ClientSession 생성자 함수
-ClientSession::ClientSession() : index(-1), mysd(-1){
-	strcpy(buftemp,"");
-};
+
+ClientSession::ClientSession() : index(-1), mysd(-1){strcpy(buftemp,"");};
 ClientSession::ClientSession(int index_t, int sd) : index(index_t), mysd(sd){
-	strcpy(buftemp,"");
-};
+  strcpy(buftemp,"");};
 ClientSession::ClientSession(int index_t, int sd, string myID_t) : index(index_t), mysd(sd) {
 	myID=myID_t;
 	strcpy(buftemp,"");
@@ -17,11 +15,11 @@ ClientSession::~ClientSession() {
 }
 
 
+// color setting by ClientManager
 void ClientSession::set_Color(int ncolor) { 
   color = ncolor;
   return;
 }
-
 
 string ClientSession::get_FontFrame(int color)
 {
@@ -33,20 +31,26 @@ string ClientSession::get_FontFrame(int color)
 
 
 //recvMsg
+//append buftemp with color command
 string ClientSession::recvMsg() {
 	strcpy(buftemp,""); //buf 초기화
 	cout<<"recvMsg stage1"<<endl;
 	int ret = recv(this->mysd, buftemp, sizeof(buftemp), 0);
-	return get_FontFrame(this->color)+buftemp;
+	return buftemp+get_FontFrame(this->color);
 }
 
 //sendMsg
 int ClientSession::sendMsg(string buf) {
 	int n;
+	
+	//put colorbuf in front of Msgbuf
+	ssize_t size = buf.length();
+	string colorbuf = buf.substr(size-7);
+	buf = colorbuf + buf.substr(0,size-7);
+
 	strcpy(buftemp,buf.c_str());
-	cout<<"_sendMSG_buftemp_"<<buftemp<<endl;
-	//cout<<sizeof(buftemp)<<endl;
-	buftemp[BUFMAX-1]='\0';
+	//cout<<"_sendMSG_buftemp_"<<buftemp<<endl;
+	buftemp[size]='\0';
 	if((n = send(mysd,buftemp,sizeof(buftemp),0)) < buf.length()) {
 		cout<<"Msg buffer is not fully sent!"<<endl;
 		return -1;
