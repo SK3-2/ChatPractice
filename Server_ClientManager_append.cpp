@@ -116,7 +116,7 @@ string ClientManager::get_registration_ID(string msg) {
 //Client가 나갈 때, 나가는 Client의 ID를 이용해 bye message frame을 만듦
 string ClientManager:: get_bye_message_frame(int index) {
 
-  string frame = "[" + CSession[index]->get_myID() + "]님이 티맥스 대화방을 나가셨습니다.\n";
+  string frame = "@[" + CSession[index]->get_myID() + "]님이 티맥스 대화방을 나가셨습니다.\n";
   return frame;
 }
 
@@ -124,8 +124,7 @@ string ClientManager:: get_bye_message_frame(int index) {
 string ClientManager:: get_broadcast_message_frame(string convs, int index) {
 
   string nid = CSession[index]->get_myID();
-  string frame = "[" + nid;
-  frame += "] ";
+  string frame = "[" + nid+ "] ";
   frame.append(convs);
   cout<<"_get_broadcast_msg_"<<frame<<endl;
   return frame;

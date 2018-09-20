@@ -11,7 +11,10 @@ int main(int argc,char* argv[]){
 
 
   //server socket open 
-  int sd = create_Server(port_in);
+  int sd;
+  if ((sd = create_Server(port_in)) == -1){
+    return -1;
+  }
   cout<<"티맥스 대화방 초기화중..."<<endl;
   
   //PollManager 생성 및 Pollfd 배정

@@ -26,7 +26,7 @@ class ClientSession{
     int mysd;
     string myID="";
     char buftemp[BUFMAX];
-    int color = 29;
+    int color = 39;
     
   public:
     ClientSession();

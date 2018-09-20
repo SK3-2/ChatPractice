@@ -23,7 +23,7 @@ void ClientSession::set_Color(int ncolor) {
 
 string ClientSession::get_FontFrame(int color)
 {
-  string cbuf = "\33[1;";
+  string cbuf = "\33[";
   cbuf += to_string(color);
   cbuf += "m";
   return cbuf;
@@ -34,34 +34,38 @@ string ClientSession::get_FontFrame(int color)
 //append buftemp with color command
 string ClientSession::recvMsg() {
 	strcpy(buftemp,""); //buf 초기화
-	cout<<"recvMsg stage1"<<endl;
-
-	  
+	cout<<"recvMsg stage"<<endl;
 	int ret = recv(this->mysd, buftemp, sizeof(buftemp), 0);
-	
+
 	if(buftemp[0] == '/') return buftemp;
+	else if(buftemp[0] == '\0') return buftemp;
+	
 	return buftemp+get_FontFrame(this->color);
-
-
 }
 
 //sendMsg
 int ClientSession::sendMsg(string buf) {
 	int n;
 	int size = buf.length();
-
+	// CM에서 @ 로 보내주는 buf는 @ 를 빼고 나서 특수처리
 	if(buf.compare(0,1,"@")==0){
 	  buf = buf.substr(1);
 	}
-	else {// if(!buf.empty()){
+	else if(!buf.empty()){
 	//put colorbuf in front of Msgbuf
-	string colorbuf = buf.substr(size-7);
-	buf = colorbuf + buf.substr(0,size-7);
-	}
+	  string colorbuf = buf.substr(size-5);
+	  cout<<"colorbuf"<<endl;
+	  cout<<colorbuf<<endl;
 
+	  buf = colorbuf + buf.substr(0,size-5);
+	  cout<<"buf: "<<buf<<endl;
+
+	  buf += get_FontFrame(this->color);
+	  cout<<"final buf: "<<buf<<"///"<<endl;
+	}
+	
 	strcpy(buftemp,buf.c_str());
-	//cout<<"_sendMSG_buftemp_"<<buftemp<<endl;
-	buftemp[size]='\0';
+	cout<<"this->color: "<<this->color<<endl;	
 	if((n = send(mysd,buftemp,sizeof(buftemp),0)) < buf.length()) {
 		cout<<"Msg buffer is not fully sent!"<<endl;
 		return -1;
