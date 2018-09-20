@@ -43,10 +43,11 @@ string ClientSession::recvMsg() {
 int ClientSession::sendMsg(string buf) {
 	int n;
 	int size = buf.length();
+	
 	if(buf.compare(0,1,"@")==0){
 	  buf = buf.substr(1);
 	}
-	else{
+	else {// if(!buf.empty()){
 	//put colorbuf in front of Msgbuf
 	string colorbuf = buf.substr(size-7);
 	buf = colorbuf + buf.substr(0,size-7);
