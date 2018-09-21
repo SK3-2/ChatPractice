@@ -68,6 +68,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 		  return;
 		}
 	      int p_key = get_key_by_ID(private_message_ID);
+	      cout<<"귓속말 index : "<<p_key<<endl;
 	      //Csession send Msg수
 	      CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
 	      return;
@@ -104,7 +105,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 
 //귓속말 buf에서 private ID extract
 string ClientManager::get_private_message_ID(string msg) {
-  int index = msg.find(" ");
+  int index = msg.find(" "); //////enter 수정
   return msg.substr(1,index-1);
 }
 
@@ -126,7 +127,6 @@ string ClientManager:: get_broadcast_message_frame(string convs, int index) {
   string nid = CSession[index]->get_myID();
   string frame = "[" + nid+ "] ";
   frame.append(convs);
-  cout<<"_get_broadcast_msg_"<<frame<<endl;
   return frame;
 }
 
@@ -134,6 +134,7 @@ string ClientManager:: get_broadcast_message_frame(string convs, int index) {
 string ClientManager:: get_private_message_frame(string buf, string private_message_ID, int index) {
   string DM = "[DM] ";
   string myname = CSession[index]->get_myID();
+  cout<<"get_private_message_frame, myname: "<<myname<<endl;
   string msg_convs = buf.substr(private_message_ID.length()+2);
   DM.append(myname).append(": ").append(msg_convs);
   return DM;
