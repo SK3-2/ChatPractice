@@ -9,22 +9,34 @@ int main(void){
 
 int color = 33;
 
- string buf ="Hello";
+
  string cbuf = "\33[1;";
  cbuf += to_string(33);
-
  cbuf += "m";
- cbuf += buf;
 
 
- string k = to_string(33);
+// string k = to_string(33);
 
- cout<<k<<endl;
- cout<<cbuf<<endl;
 
-  buf ="\33[1;31mHey";
+
+char temp1[10] = "abc\n";
+string temp2 = "def";
+
+
+string buf =  temp1 + temp2;
+
+cout<<buf<<endl;
+
+  string s = "abcdefg";
+  string x = "xxxxx";
+  s.insert(1,x);
+  cout<<"insert"<<s<<endl;
+
+
+  buf ="\33[1;35m hey \33[1;31m\n";
   cout<<buf<<endl;
-
+  int a;
+  cin>>a;
 //  printf("%c[1;5m",27);
 //  int a;
 //  scanf("%d",&a);

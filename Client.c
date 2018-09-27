@@ -82,9 +82,9 @@ int main(int argc, char *argv[])
       close(sd);
       exit(1);
     }
-
+    printf("---id_check: %s\n",id_check);
     if(strncmp(id_check,"yes",3) == 0){
-      printf("ID check Success.\n");
+      printf("ID check Success.");
       break;
     }
 
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 	  exit(1);
 	}
 	else {
-	  printf("%s",buf);
+	  printf("%s\n",buf);
 	}
       }
 
