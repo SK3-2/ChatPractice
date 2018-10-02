@@ -63,6 +63,7 @@ class ClientManager{
     void respond_Poll(int, int, int);    // used by PM              
     string get_registration_ID(string);  //used by parser
     int get_key_by_ID(string);    //used by parser                
+
 };                                                
 
 

@@ -1,5 +1,5 @@
 #include "Server_h.h"
-
+//buf 분석 함수
 int Parser(string buf,ClientManager* cmptr) {
 	int n;
 	// id 등록 요청 확인 후, id 중복이면 return 0 
