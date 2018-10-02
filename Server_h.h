@@ -56,7 +56,6 @@ class ClientManager{
     ClientManager();                              
     ClientManager(PollManager*);                  
     void respond_Poll(int, int, int);                  
-    int find_Session(const char*);                
     void close_ClientSession();                   
 		void broadcast_Message(string, int);
     string get_private_message_ID(string);  

@@ -23,8 +23,6 @@ int main(int argc,char* argv[]){
   // Client Manager 생성
   ClientManager CM_1(&PM);
 
-	PM.register_ClientManager(&CM_1);// Client Manager 생성자 쪽으로...
-
   cout<<"티맥스 대화방 시작"<<endl;
 
   while(1){
