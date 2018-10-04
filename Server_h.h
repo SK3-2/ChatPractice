@@ -59,6 +59,7 @@ class ClientManager{
     string get_private_message_frame(string, string, int); 
 
   public:                                         
+    ClientManager();
     ClientManager(PollManager*);  //used by main                 
     void respond_Poll(int, int, int);    // used by PM              
     string get_registration_ID(string);  //used by parser
@@ -76,7 +77,6 @@ class PollManager{
     int serverfd;
     const struct pollfd* pollfd_end = &g_pollfd[MAXINST-1];
 
-    int register_ClientManager(ClientManager*);  
     int get_EmptyPfdIndex(void);
     int accept_Pollfd(int);
     pollfd* get_NextPollfd(pollfd*);
@@ -86,6 +86,7 @@ class PollManager{
     PollManager(int); 
     void do_Poll(); //used by main
     void close_Pollfd(int); //used by CM
+    int register_ClientManager(ClientManager*);  
 };
 
 int Parser(string, ClientManager*);
