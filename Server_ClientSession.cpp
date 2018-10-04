@@ -21,6 +21,10 @@ void ClientSession::set_Color(int ncolor) {
   return;
 }
 
+int ClientSession::get_Color() {
+	return this->color;
+}
+
 string ClientSession::get_FontFrame(int color)
 {
   string cbuf = "\33[";

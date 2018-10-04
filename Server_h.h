@@ -32,6 +32,7 @@ class ClientSession{
     ClientSession();
     ~ClientSession();
     void set_Color(int);
+		int get_Color();
     ClientSession(int, int);
     ClientSession(int, int, string);
     string recvMsg();

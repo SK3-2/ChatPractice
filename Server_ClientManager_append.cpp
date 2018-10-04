@@ -60,12 +60,14 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 							break;
 						}
 		case 2: { //귓속말 보내기, 받을 상대(CSession[index])의
-							//ID와 받을 상대(CSession[index])의 sd를 가져와 명령 수행
-							if ((private_message_ID = get_private_message_ID(buf))=="") {
-								perror("error");
+							//ID와 받을 상대(CSession[index])의 sd를 가져와 명령 수행	
+							private_message_ID=get_private_message_ID(buf);
+							int p_key = get_key_by_ID(private_message_ID);
+							if (p_key==0) {
+								buf="";//buf 초기화
+								CSession[my_index]->sendMsg("귓속말 상대가 이방에 없습니다."+CSession[my_index]->get_FontFrame(CSession[my_index]->get_Color())+"\n");
 								return;
 							}
-							int p_key = get_key_by_ID(private_message_ID);
 							//cout<<"귓속말 index : "<<p_key<<endl;
 							//Csession send Msg수
 							CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
