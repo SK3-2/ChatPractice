@@ -30,6 +30,9 @@ class ClientSession{
     string get_FontFrame(int);
   public:
     ClientSession();
+    ~ClientSession();
+    void set_Color(int);
+		int get_Color();
     ClientSession(int, int);
     ClientSession(int, int, string);
     ~ClientSession();
