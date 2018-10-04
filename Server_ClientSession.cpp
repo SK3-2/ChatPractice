@@ -17,7 +17,7 @@ ClientSession::~ClientSession() {
 // color setting by ClientManager
 void ClientSession::set_Color(int ncolor){ 
   color = ncolor;
-  string colorSet = get_FontFrame(ncolor);
+  string colorSet = get_FontFrame(ncolor)+"User color is successfully changed";
   int nc = send(mysd,colorSet.c_str(),colorSet.length(),0);
   return;
 }
