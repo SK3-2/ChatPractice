@@ -55,6 +55,7 @@ class ClientManager{
     void close_ClientSession();                    
     void broadcast_Message(string, int); 
     string get_private_message_ID(string); 
+		string get_greeting_message_frame(int);
     string get_bye_message_frame(int);  
     string get_broadcast_message_frame(string, int); 
     string get_private_message_frame(string, string, int); 

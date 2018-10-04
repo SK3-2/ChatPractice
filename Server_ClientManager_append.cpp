@@ -53,6 +53,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 		case 1: {	//id 중복체크 후 중복이 아니면 CSession[index]에 ID 등록
 							CSession[my_index]->set_myID(get_registration_ID(buf));
 							CSession[my_index]->sendMsg("@yes");//중복이 아니면 yes 전달 
+							broadcast_Message(get_greeting_message_frame(my_index),my_index);
 							return;
 							break;
 						}
@@ -114,9 +115,15 @@ string ClientManager::get_registration_ID(string msg) {
   return msg.substr(4);
 }
 
+//Client가 들어올 때, 들어온 Client의 ID를 이용해 greeting message frame을 만듦
+string ClientManager:: get_greeting_message_frame(int index) {
+  string frame = "@[" + CSession[index]->get_myID() + "]님이 티맥스 대화방에 입장했습니다.";
+  return frame;
+}
+
 //Client가 나갈 때, 나가는 Client의 ID를 이용해 bye message frame을 만듦
 string ClientManager:: get_bye_message_frame(int index) {
-  string frame = "@[" + CSession[index]->get_myID() + "]님이 티맥스 대화방을 나가셨습니다.\n";
+  string frame = "@[" + CSession[index]->get_myID() + "]님이 티맥스 대화방을 나가셨습니다.";
   return frame;
 }
 
