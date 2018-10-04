@@ -26,8 +26,8 @@ class ClientSession{
     int mysd;
     string myID="";
     char buftemp[BUFMAX];
-    int color = 39;
-    
+    int color = 39; //default(white)    
+    string get_FontFrame(int);
   public:
     ClientSession();
     ~ClientSession();
@@ -35,36 +35,38 @@ class ClientSession{
 		int get_Color();
     ClientSession(int, int);
     ClientSession(int, int, string);
+    ~ClientSession();
+    void set_Color(int);
+    void set_mysd(int);
+    int get_mysd();
+    void set_myID(string);
+    string get_myID();
     string recvMsg();
     int sendMsg(string);
-    string get_FontFrame(int);
-    string get_myID();
-		void set_myID(string);
-    int get_mysd();
-		void set_mysd(int);
 };                                
 
 
 class ClientManager{                              
   private:                                        
-    PollManager* pmptr;                           
-	public:
-		int number=0;
-    ClientSession* CSession[MAXINST];             
+    PollManager* pmptr;                         
+    ClientSession* CSession[MAXINST];           
+    int number=0;
     string buf;                                    
     string private_message_ID;                    
+
+    void close_ClientSession();                    
+    void broadcast_Message(string, int); 
+    string get_private_message_ID(string); 
+    string get_bye_message_frame(int);  
+    string get_broadcast_message_frame(string, int); 
+    string get_private_message_frame(string, string, int); 
+
   public:                                         
-    ClientManager();                              
-    ClientManager(PollManager*);                  
-    void respond_Poll(int, int, int);                  
-    void close_ClientSession();                   
-		void broadcast_Message(string, int);
-    string get_private_message_ID(string);  
-		string get_registration_ID(string);
-    int get_key_by_ID(string);                    
-		string get_bye_message_frame(int);
-		string get_broadcast_message_frame(string, int);
-		string get_private_message_frame(string, string, int);
+    ClientManager(PollManager*);  //used by main                 
+    void respond_Poll(int, int, int);    // used by PM              
+    string get_registration_ID(string);  //used by parser
+    int get_key_by_ID(string);    //used by parser                
+
 };                                                
 
 
@@ -73,21 +75,20 @@ class PollManager{
     struct pollfd g_pollfd[MAXINST];  
     int g_pollfd_cmindex[MAXINST] = {-1};
     ClientManager* cmptr;
-
     int nread = 0;
     int serverfd;
-    int events = POLLIN;
     const struct pollfd* pollfd_end = &g_pollfd[MAXINST-1];
 
-  public:
-    PollManager(int);
     int register_ClientManager(ClientManager*);  
-    void do_Poll(); //public
-    int accept_Pollfd(int);
     int get_EmptyPfdIndex(void);
+    int accept_Pollfd(int);
     pollfd* get_NextPollfd(pollfd*);
     pollfd* get_NextReventPoll(pollfd*);
-    void close_Pollfd(int); //public
+
+  public:
+    PollManager(int); 
+    void do_Poll(); //used by main
+    void close_Pollfd(int); //used by CM
 };
 
 int Parser(string, ClientManager*);
