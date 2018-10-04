@@ -27,7 +27,7 @@ class ClientSession{
     string myID="";
     char buftemp[BUFMAX];
     int color = 39; //default(white)    
-    string get_FontFrame(int);
+    string get_FontFrame(int);	
   public:
     ClientSession();
     ~ClientSession();
@@ -35,8 +35,6 @@ class ClientSession{
 		int get_Color();
     ClientSession(int, int);
     ClientSession(int, int, string);
-    ~ClientSession();
-    void set_Color(int);
     void set_mysd(int);
     int get_mysd();
     void set_myID(string);

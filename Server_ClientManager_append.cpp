@@ -62,7 +62,7 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 							int p_key = get_key_by_ID(private_message_ID);
 							if (p_key==0) {
 								buf="";//buf 초기화
-								CSession[my_index]->sendMsg("귓속말 상대가 이방에 없습니다."+CSession[my_index]->get_FontFrame(CSession[my_index]->get_Color())+"\n");
+								CSession[my_index]->sendMsg("@귓속말 상대가 이방에 없습니다.");
 								return;
 							}
 							//cout<<"귓속말 index : "<<p_key<<endl;
