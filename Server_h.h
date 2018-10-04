@@ -25,7 +25,6 @@ class ClientSession{
     int index;
     int mysd;
     string myID="";
-    char buftemp[BUFMAX];
     int color = 39; //default(white)    
     string get_FontFrame(int);	
   public:
@@ -39,7 +38,6 @@ class ClientSession{
     int get_mysd();
     void set_myID(string);
     string get_myID();
-    string recvMsg();
     int sendMsg(string);
 };                                
 
@@ -72,6 +70,7 @@ class ClientManager{
 
 class PollManager{
   private:
+    char buftemp[BUFMAX];
     struct pollfd g_pollfd[MAXINST];  
     int g_pollfd_cmindex[MAXINST] = {-1};
     ClientManager* cmptr;
@@ -83,6 +82,7 @@ class PollManager{
     int accept_Pollfd(int);
     pollfd* get_NextPollfd(pollfd*);
     pollfd* get_NextReventPoll(pollfd*);
+    string recvMsg(int);
 
   public:
     PollManager(int); 
@@ -92,3 +92,55 @@ class PollManager{
 };
 
 int Parser(string, ClientManager*);
+
+class Message{
+	private:
+		ClientSession *from;
+		ClientSession *to;
+		string fromID;
+		int color;
+		enum msgType {GREET,BYE,WHISP,BROAD,SETCOLOR,EXISTID,NEWID};
+		enum msgError {WHISPERR,IDERR,DISCONNECTERR};
+
+		string msgBuffer;
+	
+		string set_MsgFrame(string, msgType);
+		
+	public:	
+		void setMsgColor();
+	
+
+
+};
+void Message::set_Msg(ClientSession* csptr, string buf){
+
+}
+
+string Message::set_MsgFrame(string buf, msgType mtype,string ){
+	if(mtype == GREET){
+		buf = "[" + fromID + "] enters to the Chat.";
+	}                                                                      
+	else if(mtype == BYE){
+		buf = "[" + fromID + "] exits from the Chat."
+	}
+	else if(mtype == WHISP){
+		buf = "[DM_" + fromID + "] " + buf;
+	}
+	else if(mtype == BROAD){
+		buf = "[" + fromID + "] " + buf;
+	}
+	else if(mytpe ==SETCOLOR) {
+		buf = "User color is successfully changed.";
+	}
+	else if(mtype == EXISTID) {
+		buf = "ID DENIED";
+	}
+	else if(mtype == NEWID) {
+		buf = "ID APPROVED"
+	}
+	return buf;
+}
+
+
+
+		
