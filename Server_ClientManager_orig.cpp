@@ -36,19 +36,19 @@ void ClientManager::respond_Poll(int my_index, int sd, int N){
 	}
 
 	switch(int k=Parser(buf, this)) {
-		case 0: {	//id 중복체크 후 중복이면 close socket	
-							int n;
-							if((n=get_key_by_ID(get_registration_ID(buf)) != 0)) {
-								CSession[my_index]->sendMsg("@no");//중복이면 no 전달
-								CSession[my_index]->set_myID("");
-								CSession[my_index]->set_mysd(-1);
-								delete CSession[my_index];
-								CSession[my_index]=NULL;
-								pmptr->close_Pollfd(my_index);//PollManager close socket 
-								number--;
-							}
-							return;
-							break;
+	  case 0: {	//id 중복체크 후 중복이면 close socket	
+		    int n;
+		    if((n=get_key_by_ID(get_registration_ID(buf)) != 0)) {
+		      CSession[my_index]->sendMsg("@no");//중복이면 no 전달
+		      CSession[my_index]->set_myID("");
+		      CSession[my_index]->set_mysd(-1);
+		      delete CSession[my_index];
+		      CSession[my_index]=NULL;
+		      pmptr->close_Pollfd(my_index);//PollManager close socket 
+		      number--;
+		    }
+		    return;
+		    break;
 						}
 		case 1: {	//id 중복체크 후 중복이 아니면 CSession[index]에 ID 등록
 							CSession[my_index]->set_myID(get_registration_ID(buf));
