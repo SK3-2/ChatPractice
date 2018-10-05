@@ -9,7 +9,7 @@
 #include <sys/poll.h>
 
 #define BUFMAX 1024
-#define MAXINST 512
+#define MAXINST 100 
 #define IDMAX 20
 #define CMMAX 20
 

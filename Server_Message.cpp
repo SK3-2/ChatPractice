@@ -62,18 +62,18 @@ string Message::getColor(){
 //Tokenize Function
 string Message::tokenMsg(string buf,int order){
 	int cur = 0; //Search Starts from Index 0
-	int head = 1; //to erase a command character.
+	int head; //to erase a command character.
 
 	for(int i=0; i<order; i++){
+		head = cur;
 		cur = buf.find(" ",cur);
 		if(cur == -1){
 			// 방어코드가 필요함, 원하는 token 개수 만큼 안 들어왔을 때.
 			cur = buf.find("\n");
 			break;
 		}
-		head = cur;
 	}
-	return buf.substr(head,cur-1);
+	return buf.substr(head+1,cur-head-1);
 }
 
 //Revise the Msg to ID contained Format

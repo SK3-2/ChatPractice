@@ -102,7 +102,7 @@ void ClientManager:: broadcast_Message(string Message, int index) {
 //찾으려는 id를 가지고 있는 CSession array의 index 반환
 int ClientManager:: get_key_by_ID(string ID) {
 	for (int i=1; i<=MAXINST-1; i++) {
-	cout<<"iter : "<<i<<endl;
+	cout<<"iter : "<<i<<end;
 		if ((CSession[i] != NULL) && (CSession[i]->get_myID().compare(ID)==0)) {
 			return i;
 		}
