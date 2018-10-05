@@ -25,6 +25,7 @@ class ClientSession{
 	private:
 		int index;
 		int mysd;
+		char buftemp[BUFMAX];
 		string myID="";
 		int color = 39; //default(white)    
 		string get_FontFrame(int);	
@@ -49,22 +50,19 @@ class ClientManager{
 		ClientSession* CSession[MAXINST];           
 		int number=0;
 		string buf;                                    
+		char buftemp[BUFMAX];
 		string private_message_ID;                    
-
-		void close_ClientSession();                    
-		void broadcast_Message(string, int); 
-		string get_private_message_ID(string); 
-		string get_greeting_message_frame(int);
-		string get_bye_message_frame(int);  
-		string get_broadcast_message_frame(string, int); 
-		string get_private_message_frame(string, string, int); 
+		int get_key_by_ID(string);    //used by parser                
 
 	public:                                         
 		ClientManager();
 		ClientManager(PollManager*);  //used by main                 
-		void registerID(Message*);
-		string get_registration_ID(string);  //used by parser
-		int get_key_by_ID(string);    //used by parser                
+		void register_ID(Message*);
+		void whispMsg(Message*);
+		void setMsg(Message*);
+		void broadMsg(Message*);
+		void broadcast_Message(string, int); 
+		void close_Session(Message*);                    
 
 };                                                
 
@@ -89,6 +87,7 @@ class PollManager{
 		PollManager(int, Message*); 
 		void do_Poll(); //used by main
 		void close_Pollfd(int); //used by CM
+		void register_Pollfd();
 		int register_ClientManager(ClientManager*);  
 };
 
@@ -106,14 +105,18 @@ class Message{
 	public:    
 		void set_Msg(int,int,string);
 		bool isSetting();
+		bool isSetID();
 		bool isWhisper();
 		bool isEmpty();
 		string getToID();
 		string getFromID();
+		int getFromSd();
+		int getFromIndex();
+		string getCommand();
 		string getColor();
 		void clear();
 		string get_MsgBuf();
-		string get_MsgFrame(MsgType);
+		string get_MsgFrame();
 };
 
 

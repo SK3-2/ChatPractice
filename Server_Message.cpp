@@ -4,28 +4,37 @@
 void Message::set_Msg(int sd, int index, string buf){
 	fromSd = sd;
 	fromIndex = index;
+	cout<<"setMsg: "<<buf<<endl;
 	msgBuffer = buf;	
 	return;
 }
 
 //Ask by isCase
-bool Message::isSETID(){
-	if(msgBuffer.compare(0,3,"/id")==0) return true;
-	mtype = MsgType::GREET;
+bool Message::isSetID(){
+	if(msgBuffer.compare(0,3,"/id")==0){
+		mtype = MsgType::GREET;
+		return true;
+	}
 	return false;
 }
 bool Message::isWhisper(){
-	if(msgBuffer.compare(0,1,"@")==0) return true;
-	mtype = MsgType::WHISP;
+	if(msgBuffer.compare(0,1,"@")==0){
+		mtype = MsgType::WHISP;
+		return true;
+		}
 	return false;
 }
 bool Message::isSetting(){
-	if(msgBuffer.compare(0,6,"/color")==0) return true;
+	if(msgBuffer.compare(0,6,"/color")==0){
+	return true;
+	}
 	return false;
 }
 bool Message::isEmpty(){
-	if(msgBuffer.empty()==1) return true;
-	mtype = MsgType::BYE;
+	if(msgBuffer.empty()==1){
+		mtype = MsgType::BYE;
+		return true;
+		}
 	return false;
 }
 
@@ -36,6 +45,12 @@ string Message::getToID(){
 string Message::getFromID(){
 	fromID = tokenMsg(msgBuffer,2);
 	return fromID;
+}
+int Message::getFromIndex(){
+	return fromIndex;
+}
+int Message::getFromSd(){
+	return fromSd;
 }
 string Message::getCommand(){
 	return tokenMsg(msgBuffer,1);

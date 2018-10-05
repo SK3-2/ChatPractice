@@ -34,17 +34,6 @@ string ClientSession::get_FontFrame(int color)
   return cbuf;
 }
 
-//recvMsg
-//append buftemp with color command
-string ClientSession::recvMsg() {
-  strcpy(buftemp,""); //buf 초기화
-  int ret = recv(this->mysd, buftemp, sizeof(buftemp), 0);
-
-  if(buftemp[0] == '/') return buftemp;
-  else if(buftemp[0] == '\0') return buftemp;
-  return buftemp+get_FontFrame(this->color);
-}
-
 //sendMsg
 int ClientSession::sendMsg(string buf) {
   int n;
