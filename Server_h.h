@@ -117,6 +117,7 @@ class Message{
 		void clear();
 		string get_MsgBuf();
 		string get_MsgFrame();
+		void setFromID(string);
 };
 
 

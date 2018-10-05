@@ -36,6 +36,8 @@ string ClientSession::get_FontFrame(int color)
 
 //sendMsg
 int ClientSession::sendMsg(string buf) {
+  
+  
   int n;
   int size = buf.length();
 
@@ -43,14 +45,14 @@ int ClientSession::sendMsg(string buf) {
   if(buf.compare(0,1,"@")==0){
     buf = buf.substr(1);
   }
-
+/*
   //put colorbuf in front of Msgbuf
   else if(!buf.empty()){
     string colorbuf = buf.substr(size-5);
     buf = colorbuf + buf.substr(0,size-6);
     buf += get_FontFrame(this->color);
   }
-
+*/
   strcpy(buftemp,buf.c_str());
   if((n = send(mysd,buftemp,sizeof(buftemp),0)) < buf.length()) {
     cout<<"Msg buffer is not fully sent!"<<endl;

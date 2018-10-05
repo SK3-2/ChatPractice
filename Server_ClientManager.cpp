@@ -36,7 +36,7 @@ void ClientManager::register_ID(Message* Msg){
   else {
     pmptr->register_Pollfd();
     number++;
-    CSession[Msg->getFromIndex()] = new ClientSession(Msg->getFromIndex(),Msg->getFromSd());
+    CSession[Msg->getFromIndex()] = new ClientSession(Msg->getFromIndex(),Msg->getFromSd(),Msg->getFromID());
     buf="@yes";
     CSession[Msg->getFromIndex()]->sendMsg(buf);
     broadMsg(Msg);
@@ -46,7 +46,8 @@ void ClientManager::register_ID(Message* Msg){
 // Whisper Case
 void ClientManager::whispMsg(Message* Msg){
   int index;
-  string toID = Msg->getToID();    
+  string toID = Msg->getToID();   
+  Msg->setFromID(CSession[Msg->getFromIndex()]->get_myID());
   if ((index=get_key_by_ID(toID)) == -1){
     CSession[Msg->getFromIndex()]->sendMsg("There is no person with that ID.");
   }
@@ -59,8 +60,11 @@ void ClientManager::whispMsg(Message* Msg){
 // Broadcast Case
 void ClientManager::broadMsg(Message* Msg){
   int myIndex = Msg->getFromIndex();
+  Msg->setFromID(CSession[Msg->getFromIndex()]->get_myID());
   cout<<"myIndex = "<<myIndex<<endl;
-  broadcast_Message(Msg->get_MsgFrame(),myIndex);
+  string buf = Msg->get_MsgFrame();
+  cout<<"Msg = "<<buf<<endl;
+  broadcast_Message(buf,myIndex);
   cout<<"CHECK broad_Msg"<<endl;
 }
 
