@@ -18,6 +18,7 @@ using namespace std;
 class PollManager;
 class ClientManager;
 class ClientSession;
+class Message;
 
 
 class ClientSession{              
@@ -72,8 +73,8 @@ class PollManager{
 	private:
 		char buftemp[BUFMAX];
 		struct pollfd g_pollfd[MAXINST];  
-		int g_pollfd_cmindex[MAXINST] = {-1};
 		ClientManager* cmptr;
+		Message* mptr;
 		int nread = 0;
 		int serverfd;
 		const struct pollfd* pollfd_end = &g_pollfd[MAXINST-1];
@@ -85,7 +86,7 @@ class PollManager{
 		string recvMsg(int);
 
 	public:
-		PollManager(int); 
+		PollManager(int, Message*); 
 		void do_Poll(); //used by main
 		void close_Pollfd(int); //used by CM
 		int register_ClientManager(ClientManager*);  
@@ -104,7 +105,7 @@ class Message{
 		string tokenMsg(string, int);
 	public:    
 		void set_Msg(int,int,string);
-		bool isSetID();
+		bool isSetting();
 		bool isWhisper();
 		bool isEmpty();
 		string getToID();

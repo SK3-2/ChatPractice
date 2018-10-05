@@ -1,4 +1,4 @@
-#include "Server_h.h";
+#include "Server_h.h"
 
 //Put recv Msg&Info  -- used in Receiving Object
 void Message::set_Msg(int sd, int index, string buf){
@@ -18,7 +18,7 @@ bool Message::isSetting(){
 	return false;
 }
 bool Message::isEmpty(){
-	if(msgBuffer.emtpy()==1) return true;
+	if(msgBuffer.empty()==1) return true;
 	return false;
 }
 
@@ -57,7 +57,7 @@ string Message::get_MsgFrame(MsgType mtype){
 		msgBuffer = "[" + fromID + "] enters to the Chat.";
 	}
 	else if(mtype == MsgType::BYE){
-		msgBuffer = "[" + fromID + "] exits from the Chat."
+		msgBuffer = "[" + fromID + "] exits from the Chat.";
 	}
 	else if(mtype == MsgType::WHISP){
 		msgBuffer = "[DM_" + fromID + "] " + msgBuffer;
@@ -73,7 +73,8 @@ string Message::get_MsgFrame(MsgType mtype){
 
 
 void Message::clear(){
-	from NULL;
+	fromSd = -1;
 	fromID = "";
+	fromIndex = -1;
 	msgBuffer = "";
 }

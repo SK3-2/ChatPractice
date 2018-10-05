@@ -12,9 +12,10 @@ int main(int argc,char* argv[]){
   int sd;
   if ((sd = create_Server(port_in)) == -1) return -1;
   cout<<"티맥스 대화방 초기화중..."<<endl;
-  
+  //Message 생성
+	Message Msg;
   //PollManager 생성 및 Pollfd 배정
-  PollManager PM(sd);
+  PollManager PM(sd,&Msg);
 
   // Client Manager 생성
   ClientManager CM_1(&PM);

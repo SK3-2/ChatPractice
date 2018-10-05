@@ -17,24 +17,87 @@ using namespace std;
 
 //ClientManager 생성자
 ClientManager::ClientManager(){}
-ClientManager::ClientManager(PollManager* ptr_p){
-  pmptr=ptr_p;
+ClientManager::ClientManager(PollManager* ptr_t){
+  pmptr=ptr_t;
   pmptr->register_ClientManager(this);
 }
 
 
 // Respond to POLL
-void ClientManager::registerID(Message* Msg){
-	if(isExistID()) {
-		buf="@no";
-		send(Msg->getfromSd(),buf,sizeof(buf),0);
+void ClientManager::respond_Poll(int my_index, int sd, int N){
+	buf="";//buf 초기화
+	if (N==0) { // 등록시 sd를 CSession[index]에 등록 및 number++
+		CSession[my_index] = new ClientSession(my_index,sd);
+		buf = CSession[my_index]->recvMsg();
+		number++;
 	}
-	else {
-		pmptr->register_Pollfd(Msg);
-		CSession[Msg->getfromIndex()] = new ClientSession(Msg->getfromIndex(),Msg->getfromSd());
-		buf="@yes";
-		CSession[Msg->getfromIndex()]->sendMsg(buf);
-		broadcast_Message(Msg->get_MsgFrame(GREET),Msg->getfromIndex());
+	else { // 대화말이 들어오면 CSession[index] recvMsg 호출
+		buf = CSession[my_index]->recvMsg();
+	}
+
+	switch(int k=Parser(buf, this)) {
+		case 0: {	//id 중복체크 후 중복이면 close socket	
+							int n;
+							if((n=get_key_by_ID(get_registration_ID(buf)) != 0)) {
+								CSession[my_index]->sendMsg("@no");//중복이면 no 전달
+								CSession[my_index]->set_myID("");
+								CSession[my_index]->set_mysd(-1);
+								delete CSession[my_index];
+								CSession[my_index]=NULL;
+								pmptr->close_Pollfd(my_index);//PollManager close socket 
+								number--;
+							}
+							return;
+							break;
+						}
+		case 1: {	//id 중복체크 후 중복이 아니면 CSession[index]에 ID 등록
+							CSession[my_index]->set_myID(get_registration_ID(buf));
+							CSession[my_index]->sendMsg("@yes");//중복이 아니면 yes 전달 
+							broadcast_Message(get_greeting_message_frame(my_index),my_index);
+							return;
+							break;
+						}
+		case 2: { //귓속말 보내기, 받을 상대(CSession[index])의
+							//ID와 받을 상대(CSession[index])의 sd를 가져와 명령 수행	
+							private_message_ID=get_private_message_ID(buf);
+							int p_key = get_key_by_ID(private_message_ID);
+							if (p_key==0) {
+								buf="";//buf 초기화
+								CSession[my_index]->sendMsg("@귓속말 상대가 이방에 없습니다.");
+								return;
+							}
+							//cout<<"귓속말 index : "<<p_key<<endl;
+							//Csession send Msg수
+							CSession[p_key]->sendMsg(get_private_message_frame(buf,private_message_ID,my_index)); 
+							return;
+							break;
+						}
+		case 3: { //Client 종료, 종료메시지를 나머지 Client에게 전달하고,
+							//close socket 및 number 감소
+							broadcast_Message(get_bye_message_frame(my_index),my_index);
+							CSession[my_index]->set_myID("");
+							CSession[my_index]->set_mysd(-1);
+							delete CSession[my_index];
+							number--;
+							CSession[my_index]=NULL;
+							pmptr->close_Pollfd(my_index);
+							return;
+							break;
+						}
+		case 4: { //Client font color 바꾸기
+							int C = atoi(buf.substr(7,2).c_str());
+							CSession[my_index]->set_Color(C);
+							return;
+							break;
+						}
+		case 5: { //전체채팅 보내기, (CSession[my_index])의 ID와 buf를 가져와
+							//나머지 CSession들의 sd로 sendMsg
+							broadcast_Message(get_broadcast_message_frame(buf,my_index),my_index);
+							return;
+							break;
+						}
+		default:
+						return;
 	}
 }
 

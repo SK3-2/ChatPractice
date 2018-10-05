@@ -8,7 +8,8 @@
 using namespace std;
 
 //생성자
-PollManager::PollManager(int sd): serverfd(sd){
+PollManager::PollManager(int sd, Message* ptr): serverfd(sd){
+	mptr = ptr;
   for(int i=0; i<MAXINST; i++){
     g_pollfd[i] = {-1,POLLIN, 0};
   }
@@ -97,7 +98,7 @@ void PollManager::do_Poll(void){
 	    cout<<"Client Socket Event Occur!"<<endl;
 	    int csd = g_pollfd[index].fd;
 	    mptr->set_Msg(csd,index,recvMsg(csd));
-	    cmptr->commonMsg(mptr);
+	    cmptr->commomMsg(mptr);
 	  }
 	  else{
 	    cout<<"Wrong Index Input: "<<cur->fd<<endl;      
