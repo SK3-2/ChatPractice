@@ -47,7 +47,7 @@ class ClientSession{
 class ClientManager{                              
 	private:                                        
 		PollManager* pmptr;                         
-		ClientSession* CSession[MAXINST];           
+		ClientSession* CSession[MAXINST] = {NULL};           
 		int number=0;
 		string buf;                                    
 		char buftemp[BUFMAX];
