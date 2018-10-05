@@ -4,13 +4,19 @@
 void Message::set_Msg(int sd, int index, string buf){
 	fromSd = sd;
 	fromIndex = index;
-	msgBuffer = buf;
+	msgBuffer = buf;	
 	return;
 }
 
 //Ask by isCase
+bool Message::isSETID(){
+	if(msgBuffer.compare(0,3,"/id")==0) return true;
+	mtype = MsgType::GREET;
+	return false;
+}
 bool Message::isWhisper(){
 	if(msgBuffer.compare(0,1,"@")==0) return true;
+	mtype = MsgType::WHISP;
 	return false;
 }
 bool Message::isSetting(){
@@ -19,6 +25,7 @@ bool Message::isSetting(){
 }
 bool Message::isEmpty(){
 	if(msgBuffer.empty()==1) return true;
+	mtype = MsgType::BYE;
 	return false;
 }
 
@@ -29,6 +36,9 @@ string Message::getToID(){
 string Message::getFromID(){
 	fromID = tokenMsg(msgBuffer,2);
 	return fromID;
+}
+string Message::getCommand(){
+	return tokenMsg(msgBuffer,1);
 }
 string Message::getColor(){
 	return tokenMsg(msgBuffer,2);
@@ -52,7 +62,7 @@ string Message::tokenMsg(string buf,int order){
 }
 
 //Revise the Msg to ID contained Format
-string Message::get_MsgFrame(MsgType mtype){
+string Message::get_MsgFrame(){
 	if(mtype == MsgType::GREET){
 		msgBuffer = "[" + fromID + "] enters to the Chat.";
 	}

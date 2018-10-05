@@ -25,62 +25,62 @@ ClientManager::ClientManager(PollManager* ptr_p){
 
 // Respond to POLL
 void ClientManager::registerID(Message* Msg){
-	if(isExistID()) {
-		buf="@no";
-		send(Msg->getfromSd(),buf,sizeof(buf),0);
-	}
-	else {
-		pmptr->register_Pollfd(Msg);
-		CSession[Msg->getfromIndex()] = new ClientSession(Msg->getfromIndex(),Msg->getfromSd());
-		buf="@yes";
-		CSession[Msg->getfromIndex()]->sendMsg(buf);
-		broadcast_Message(Msg->get_MsgFrame(GREET),Msg->getfromIndex());
-	}
-}
-
-//귓속말 buf에서 private ID extract
-string ClientManager::get_private_message_ID(string msg) {
-  int index = msg.find(" "); //////enter 수정
-  if(index == -1) {
-    index = msg.find("\n");
+  if(isExistID()) {
+    buf="@no";
+    send(Msg->getfromSd(),buf,sizeof(buf),0);
+    close(Msg->getfromSd());
   }
-  return msg.substr(1,index-1);
+  else {
+    pmptr->register_Pollfd(Msg);
+    number++;
+    CSession[Msg->getfromIndex()] = new ClientSession(Msg->getfromIndex(),Msg->getfromSd());
+    buf="@yes";
+    CSession[Msg->getfromIndex()]->sendMsg(buf);
+    broadcast_Message(Msg->get_MsgFrame(GREET),Msg->getfromIndex());
+  }
 }
 
-//처음 등록시 들어오는 buf로부터 registration ID extract
-string ClientManager::get_registration_ID(string msg) {
-  return msg.substr(4);
+// Whisper Case
+void ClientManager::whispMsg(Message* Msg){
+  int index;
+  string toID = Msg->getToID();    
+  if ((index=get_key_by_ID(toID)) == -1){
+    CSession[Msg->getFromIndex]->sendMsg("There is no person with that ID.");
+  }
+  else{
+    string buf = Msg->get_MsgFrame();
+    CSession[index]->sendMsg(buf);     
+  }
 }
 
-//Client가 들어올 때, 들어온 Client의 ID를 이용해 greeting message frame을 만듦
-string ClientManager:: get_greeting_message_frame(int index) {
-  string frame = "@[" + CSession[index]->get_myID() + "]님이 티맥스 대화방에 입장했습니다.";
-  return frame;
+// Broadcast Case
+void ClientManager::broadMsg(Message* Msg){
+  broadcast_Message(Msg->get_MsgFrame(),get_key_by_ID(Msg->getFromID()));
 }
 
-//Client가 나갈 때, 나가는 Client의 ID를 이용해 bye message frame을 만듦
-string ClientManager:: get_bye_message_frame(int index) {
-  string frame = "@[" + CSession[index]->get_myID() + "]님이 티맥스 대화방을 나가셨습니다.";
-  return frame;
+// Setting Case
+void ClientManager::settingMsg(Message* Msg){
+ string command = Msg->getCommand();
+ if(command.compare(0,"color") == 0){
+  CSession[Msg->getfromIndex()]->set_Color(Msg->getColor());
+ }
+ //if you want to put more options, put here!
+ //...
+}
+  
+//Close Session
+void ClientManager::closeSession(Message* Msg){
+  int myIndex = get_key_by_ID(Msg>getFromID());
+ 
+  CSession[myIndex]->set_myID("");
+  CSession[myIndex]->set_mysd(-1);
+  delete CSession[myIndex];
+  CSession[myIndex] = NULL;
+  pmptr->close_Pollfd(myIndex);
+  number--;
 }
 
-//Client가 전체채팅을 할 때, Client의 ID를 이용해 braodcast message frame을 만듦
-string ClientManager:: get_broadcast_message_frame(string convs, int index) {
-  string nid = CSession[index]->get_myID();
-  string frame = "[" + nid+ "]: ";
-  frame.append(convs);
-  return frame;
-}
 
-//Client가 귓속말을 할 때, Client의 ID를 이용해 private message frame을 만듦
-string ClientManager:: get_private_message_frame(string buf, string private_message_ID, int index) {
-  string DM = "[DM_";
-  string myname = CSession[index]->get_myID();
-  cout<<"get_private_message_frame, myname: "<<myname<<endl;
-  string msg_convs = buf.substr(private_message_ID.length()+2);
-  DM.append(myname).append("]: ").append(msg_convs);
-  return DM;
-}
 
 //전체채팅을 보내는 함수
 void ClientManager:: broadcast_Message(string Message, int index) {
@@ -97,7 +97,6 @@ void ClientManager:: broadcast_Message(string Message, int index) {
     }
   }
   return;
-
 }
 
 //찾으려는 id를 가지고 있는 CSession array의 index 반환

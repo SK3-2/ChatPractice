@@ -86,29 +86,43 @@ void PollManager::do_Poll(void){
     for (int n_poll = 0; n_poll < nread; n_poll++) {  // iterate nread times
       cur = get_NextReventPoll(cur);  // return type : struct pollfd*
       int index = cur-&g_pollfd[0];
+      
+      if(index == 0){
+	cout<<"Accept Socket Event Occur!"<<endl;
+	int nfd = accept_Pollfd(serverfd);	
+	int EmptyPfdIndex = get_EmptyPfdIndex();
+	mptr->set_Msg(nfd,EmptyPfdIndex,recvMsg(nfd));
+	cmptr->registerID(mptr);
+      }
+      else if(index > 0){
+	cout<<"Client Socket Event Occur!"<<endl;
+	int csd = g_pollfd[index].fd;
+	mptr->set_Msg(csd,index,recvMsg(csd));
 
-          if(index == 0){
-	    cout<<"Accept Socket Event Occur!"<<endl;
-	    int nfd = accept_Pollfd(serverfd);	
-	    int EmptyPfdIndex = get_EmptyPfdIndex();
-	    mptr->set_Msg(nfd,EmptyPfdIndex,recvMsg(nfd));
-	    cmptr->registerID(mptr);
-	  }
-	  else if(index > 0){
-	    cout<<"Client Socket Event Occur!"<<endl;
-	    int csd = g_pollfd[index].fd;
-	    mptr->set_Msg(csd,index,recvMsg(csd));
-	    cmptr->commomMsg(mptr);
-	  }
-	  else{
-	    cout<<"Wrong Index Input: "<<cur->fd<<endl;      
-	  }
+	if(mptr->isSetting()){
+	  cmptr->settingMsg(mptr);	
+	}
+	else if(mptr->isEmpty()){
+	  cmptr->closeSession(mptr);
+	}
+	else if(mptr->isWhisper()){
+	  cmptr->whispMsg(mptr);	
+	}
+	else{
+	  cmptr->broadMsg(mptr);
+	}
+
+      }
+      else{
+	cout<<"Wrong Index Input: "<<cur->fd<<endl;      
+      }
     }
   }
 }
 
 // close Poll
 void PollManager::close_Pollfd(int index){
+  close(g_pollfd[index].fd); 
   g_pollfd[index].fd  = -1;
   g_pollfd[index].revents = 0;
 }

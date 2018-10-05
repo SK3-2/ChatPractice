@@ -96,7 +96,7 @@ class PollManager{
 class Message{
 	private:
 		enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};
-		MsgType mtype = MsgType::EMPTY;
+		MsgType mtype = MsgType::BROAD;
 
 		int fromSd;
 		int fromIndex;
