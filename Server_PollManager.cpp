@@ -95,11 +95,11 @@ void PollManager::do_Poll(void){
 				cout<<"Accept Socket Event Occur!"<<endl;
 				int nfd = accept_Pollfd(serverfd);	
 				int EmptyPfdIndex = get_EmptyPfdIndex();
-				if(mptr->isSetID()){
-					mptr->set_Msg(nfd,EmptyPfdIndex,recvMsg(nfd));
+				mptr->set_Msg(nfd,EmptyPfdIndex,recvMsg(nfd));
+				if(mptr->isSetID()) {
 					cmptr->register_ID(mptr);
 				}
-				else cout<<"Wrong ID submission"<<endl;
+				else cout<<"Wrong ID Submission"<<endl;
 			}
 			else if(index > 0){
 				cout<<"Client Socket Event Occur!"<<endl;
