@@ -91,13 +91,13 @@ void PollManager::do_Poll(void){
 	    int nfd = accept_Pollfd(serverfd);	
 	    int EmptyPfdIndex = get_EmptyPfdIndex();
 	    mptr->set_Msg(nfd,EmptyPfdIndex,recvMsg(nfd));
-	    cmptr.registerID(mptr);
+	    cmptr->registerID(mptr);
 	  }
 	  else if(index > 0){
 	    cout<<"Client Socket Event Occur!"<<endl;
 	    int csd = g_pollfd[index].fd;
 	    mptr->set_Msg(csd,index,recvMsg(csd));
-	    cmptr.commonMsg(mptr);
+	    cmptr->commonMsg(mptr);
 	  }
 	  else{
 	    cout<<"Wrong Index Input: "<<cur->fd<<endl;      
