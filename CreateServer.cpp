@@ -1,6 +1,6 @@
-#include "Server_h.h"
+#include "Server.h"
 
-int create_Server(int port) 
+int CreateServer(int port) 
 {
 	int s;
 	struct sockaddr_in server_addr;
