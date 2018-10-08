@@ -1,4 +1,4 @@
-#include "Server_h.h"
+#include "Server.h"
 
 //ClientSession 생성자 함수
 ClientSession::ClientSession() : index(-1), mysd(-1){strcpy(buftemp,"");};
@@ -17,7 +17,7 @@ ClientSession::~ClientSession() {
 // color setting by ClientManager
 void ClientSession::set_Color(int ncolor){ 
   this->color = ncolor;
-  string colorSet = get_FontFrame(ncolor)+"User color is successfully changed";
+  string colorSet = get_FontFrame()+"User color is successfully changed";
   int nc = send(this->mysd,colorSet.c_str(),colorSet.length()+1,0);
   return;
 }
@@ -26,33 +26,26 @@ int ClientSession::get_Color() {
 	return this->color;
 }
 
-string ClientSession::get_FontFrame(int color)
+string ClientSession::get_FontFrame()
 {
   string cbuf = "\33[";
-  cbuf += to_string(color);
+  cbuf += to_string(this->color);
   cbuf += "m";
   return cbuf;
 }
 
 //sendMsg
 int ClientSession::sendMsg(string buf) {
-  
-  
+    
   int n;
   int size = buf.length();
 
-  // CM에서 @ 로 보내주는 buf는 @ 를 빼고 나서 특수처리
-  if(buf.compare(0,1,"@")==0){
-    buf = buf.substr(1);
-  }
-/*
+
   //put colorbuf in front of Msgbuf
-  else if(!buf.empty()){
-    string colorbuf = buf.substr(size-5);
-    buf = colorbuf + buf.substr(0,size-6);
-    buf += get_FontFrame(this->color);
+  if(!buf.empty()){
+    buf += get_FontFrame();
   }
-*/
+
   strcpy(buftemp,buf.c_str());
   if((n = send(mysd,buftemp,sizeof(buftemp),0)) < buf.length()) {
     cout<<"Msg buffer is not fully sent!"<<endl;

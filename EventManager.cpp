@@ -3,12 +3,12 @@
 #include<netinet/in.h>
 #include<sys/types.h>
 #include<sys/poll.h>
-#include"Server_h.h"
+#include"Server.h"
 
 using namespace std;
 
 //생성자
-PollManager::PollManager(int sd, Message* ptr): serverfd(sd){
+EventManager::EventManager(int sd, Message* ptr): serverfd(sd){
   mptr = ptr;
   for(int i=0; i<MAXINST; i++){
     g_pollfd[i] = {-1,POLLIN, 0};
@@ -18,18 +18,18 @@ PollManager::PollManager(int sd, Message* ptr): serverfd(sd){
 }
 
 // Client Manager를 등록함: 0 = 성공, -1 = 실패
-int PollManager::register_ClientManager(ClientManager* ptr){
+int EventManager::register_ClientManager(ClientManager* ptr){
   if(ptr == NULL) return -1;
   cmptr = (ClientManager*)ptr;
   return 0;
 }
 
-void PollManager::register_Pollfd() {
-  g_pollfd[mptr->getFromIndex()].fd = mptr->getFromSd();
+void EventManager::register_Pollfd(int nfd) {
+  g_pollfd[mptr->getFromIndex()].fd = nfd;
 }
 
 // Get Next assigned pollfd Ptr
-struct pollfd* PollManager::get_NextPollfd(struct pollfd* cur){
+struct pollfd* EventManager::get_NextPollfd(struct pollfd* cur){
   int index;
   if(cur==NULL) index = 0;
   else{
@@ -45,7 +45,7 @@ struct pollfd* PollManager::get_NextPollfd(struct pollfd* cur){
 }
 
 // Poll revent handler
-struct pollfd* PollManager::get_NextReventPoll(struct pollfd* pfd){
+struct pollfd* EventManager::get_NextReventPoll(struct pollfd* pfd){
   struct pollfd* cur = pfd;
   while((cur = get_NextPollfd(cur))){
     if(cur->revents == POLLIN){
@@ -56,7 +56,7 @@ struct pollfd* PollManager::get_NextReventPoll(struct pollfd* pfd){
 }  
 
 // Get Empty pollfd index
-int PollManager::get_EmptyPfdIndex(void){
+int EventManager::get_EmptyPfdIndex(void){
   for (struct pollfd* pfd = &g_pollfd[0]; pfd < pollfd_end; pfd++){
     if(pfd->fd == -1){
       return (int)(pfd - &g_pollfd[0]);
@@ -66,7 +66,7 @@ int PollManager::get_EmptyPfdIndex(void){
 }      
 
 // Accept pollfd
-int PollManager::accept_Pollfd(int sd){
+int EventManager::accept_Pollfd(int sd){
   struct sockaddr_in ADDR_IN;
   int serverlen = sizeof(sockaddr_in);
   int nfd = accept(sd, (struct sockaddr *)&ADDR_IN, (socklen_t *)&serverlen);
@@ -74,7 +74,7 @@ int PollManager::accept_Pollfd(int sd){
 }
 
 
-string PollManager::recvMsg(int fd) {
+string EventManager::recvMsg(int fd) {
   strcpy(buftemp,""); //buf 초기화
   int ret = recv(fd, buftemp, sizeof(buftemp), 0);
   return buftemp;
@@ -82,7 +82,7 @@ string PollManager::recvMsg(int fd) {
 
 
 // Execute Poll 
-void PollManager::do_Poll(void){
+void EventManager::do_Poll(void){
   while(1){
     nread = poll(g_pollfd, MAXINST, -1);
 
@@ -95,9 +95,9 @@ void PollManager::do_Poll(void){
 	cout<<"Accept Socket Event Occur!"<<endl;
 	int nfd = accept_Pollfd(serverfd);	
 	int EmptyPfdIndex = get_EmptyPfdIndex();
-	mptr->set_Msg(nfd,EmptyPfdIndex,recvMsg(nfd));
+	mptr->set_Msg(EmptyPfdIndex,recvMsg(nfd));
 	if(mptr->isSetID()) {
-	  cmptr->register_ID(mptr);
+	  cmptr->register_ID(mptr,nfd);
 	}
 	else cout<<"Wrong ID Submission"<<endl;
       }
@@ -105,10 +105,10 @@ void PollManager::do_Poll(void){
 	cout<<"Client Socket Event Occur!"<<endl;
 	int csd = g_pollfd[index].fd;
 
-	mptr->set_Msg(csd,index,recvMsg(csd));
+	mptr->set_Msg(index,recvMsg(csd));
 
 	if(mptr->isSetting()){
-	  cmptr->setMsg(mptr);	
+	  cmptr->settingMsg(mptr);	
 	}
 	else if(mptr->isEmpty()){
 	  cmptr->close_Session(mptr);
@@ -129,7 +129,7 @@ void PollManager::do_Poll(void){
 }
 
 // close Poll
-void PollManager::close_Pollfd(int index){
+void EventManager::close_Pollfd(int index){
   close(g_pollfd[index].fd); 
   g_pollfd[index].fd  = -1;
   g_pollfd[index].revents = 0;

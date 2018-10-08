@@ -8,7 +8,7 @@
 #include <string> //C
 #include <unistd.h>    
 #include <sys/poll.h>  
-#include "Server_h.h"
+#include "Server.h"
 
 #define BUFMAX 1024    
 #define IDMAX 20       
@@ -16,28 +16,26 @@
 using namespace std;
 
 //ClientManager 생성자
-ClientManager::ClientManager(PollManager* ptr_p){
+ClientManager::ClientManager(EventManager* ptr_p){
   pmptr=ptr_p;
   pmptr->register_ClientManager(this);
 }
 
 
 // Respond to POLL
-void ClientManager::register_ID(Message* Msg){
-  cout<<Msg->getFromID()<<endl;
-  int index = get_key_by_ID(Msg->getFromID());
-  cout<<index<<endl;
+void ClientManager::register_ID(Message* Msg, int fd){
+  int index = get_key_by_ID(Msg->getAskedID());
   if(index > 0) {
-    buf="@no";
-    strcpy(buftemp,buf.c_str());
-    send(Msg->getFromSd(),buftemp,sizeof(buftemp),0);
-    close(Msg->getFromSd());
+    strcpy(buftemp,"no");
+    send(fd,buftemp,sizeof(buftemp),0);
+    close(fd);
+    cout<<"Submitted ID is already existed - denied."<<endl;
   }
   else {
-    pmptr->register_Pollfd();
     number++;
-    CSession[Msg->getFromIndex()] = new ClientSession(Msg->getFromIndex(),Msg->getFromSd(),Msg->getFromID());
-    buf="@yes";
+    pmptr->register_Pollfd(fd);
+    CSession[Msg->getFromIndex()] = new ClientSession(Msg->getFromIndex(),fd,Msg->getAskedID());
+    buf="yes";
     CSession[Msg->getFromIndex()]->sendMsg(buf);
     broadMsg(Msg);
   }
@@ -47,32 +45,27 @@ void ClientManager::register_ID(Message* Msg){
 void ClientManager::whispMsg(Message* Msg){
   int index;
   string toID = Msg->getToID();   
-  Msg->setFromID(CSession[Msg->getFromIndex()]->get_myID());
+  
   if ((index=get_key_by_ID(toID)) == -1){
     CSession[Msg->getFromIndex()]->sendMsg("There is no person with that ID.");
   }
   else{
-    string buf = Msg->get_MsgFrame();
-    CSession[index]->sendMsg(buf);     
+    CSession[index]->sendMsg(Msg->get_MsgFrame(CSession[Msg->getFromIndex()]));
   }
 }
 
 // Broadcast Case
 void ClientManager::broadMsg(Message* Msg){
-  int myIndex = Msg->getFromIndex();
-  Msg->setFromID(CSession[Msg->getFromIndex()]->get_myID());
-  cout<<"myIndex = "<<myIndex<<endl;
-  string buf = Msg->get_MsgFrame();
-  cout<<"Msg = "<<buf<<endl;
-  broadcast_Message(buf,myIndex);
-  cout<<"CHECK broad_Msg"<<endl;
+  int index = Msg->getFromIndex();
+  string buf = Msg->get_MsgFrame(CSession[Msg->getFromIndex()]);
+  broadcast_Message(buf,index);
 }
 
 // Setting Case
-void ClientManager::setMsg(Message* Msg){
+void ClientManager::settingMsg(Message* Msg){
   string command = Msg->getCommand();
   if(command.compare(0,5,"color") == 0){
-    CSession[Msg->getFromIndex()]->set_Color(stoi(Msg->getColor()));
+    CSession[Msg->getFromIndex()]->set_Color(stoi(Msg->getValue()));
   }
   //if you want to put more options, put here!
   //...
@@ -80,7 +73,9 @@ void ClientManager::setMsg(Message* Msg){
 
 //Close Session
 void ClientManager::close_Session(Message* Msg){
-  int myIndex = get_key_by_ID(Msg->getFromID());
+  int myIndex = Msg->getFromIndex();
+  string mbuf = Msg->get_MsgFrame(CSession[Msg->getFromIndex()]);
+  broadcast_Message(mbuf,myIndex);
   CSession[myIndex]->set_myID("");
   CSession[myIndex]->set_mysd(-1);
   delete CSession[myIndex];

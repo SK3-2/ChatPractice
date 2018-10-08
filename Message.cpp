@@ -1,41 +1,52 @@
-#include "Server_h.h"
+#include "Server.h"
 
 //Put recv Msg&Info  -- used in Receiving Object
-void Message::set_Msg(int sd, int index, string buf){
-  fromSd = sd;
+void Message::set_Msg(int index, string buf){
   fromIndex = index;
   cout<<"setMsg: "<<buf<<endl;
   msgBuffer = buf;
-  mtype = MsgType::BROAD;
+  mtype = parseMsg(msgBuffer);
   return;
 }
 
+Message::MsgType Message::parseMsg(string buf){
+  MsgType type;
+  if(buf.compare(0,1,"/")==0){
+    if(buf.compare(1,2,"id")==0)
+      type = MsgType::GREET;   
+    else 
+      type = MsgType::SET;  //SET인 경우는, Command를 추가로 비교
+  }
+  else if(msgBuffer.compare(0,1,"@")==0)
+    type = MsgType::WHISP;
+  else if(msgBuffer.empty()==1) {
+    cout<<"Msg is empty"<<endl;
+    type = MsgType::BYE;
+  }
+  else 
+    type = MsgType::BROAD;
+  return type;
+}
+
 //Ask by isCase
-bool Message::isSetID(){
-  if(msgBuffer.compare(0,3,"/id")==0){
-    mtype = MsgType::GREET;
+bool Message::isSetID() const {
+  if(mtype == MsgType::GREET)
     return true;
-  }
   return false;
 }
-bool Message::isWhisper(){
-  if(msgBuffer.compare(0,1,"@")==0){
-    mtype = MsgType::WHISP;
+bool Message::isWhisper() const {
+  if(mtype == MsgType::WHISP)
     return true;
-  }
   return false;
 }
-bool Message::isSetting(){
-  if(msgBuffer.compare(0,6,"/color")==0){
+bool Message::isSetting() const {
+  if(mtype == MsgType::SET)
     return true;
-  }
   return false;
 }
-bool Message::isEmpty(){
-  if(msgBuffer.empty()==1){
-    mtype = MsgType::BYE;
+bool Message::isEmpty() const {
+  if(mtype == MsgType::BYE)
     return true;
-  }
   return false;
 }
 
@@ -43,25 +54,19 @@ bool Message::isEmpty(){
 string Message::getToID(){
   return tokenMsg(msgBuffer,1);
 }
-string Message::getFromID(){
+string Message::getAskedID(){
   fromID = tokenMsg(msgBuffer,2);
   return fromID;
 }
+
 int Message::getFromIndex(){
   return fromIndex;
-}
-int Message::getFromSd(){
-  return fromSd;
 }
 string Message::getCommand(){
   return tokenMsg(msgBuffer,1);
 }
-string Message::getColor(){
+string Message::getValue(){
   return tokenMsg(msgBuffer,2);
-}
-
-void Message::setFromID(string ID){
-  fromID = ID;
 }
 
 //Tokenize Function
@@ -85,25 +90,27 @@ string Message::tokenMsg(string buf,int order){
 }
 
 //Revise the Msg to ID contained Format
-string Message::get_MsgFrame(){
+string Message::get_MsgFrame(ClientSession* csptr){
+  fromID = csptr->get_myID();
+  fromColor = csptr->get_Color();
+
   if(mtype == MsgType::GREET){
-    msgBuffer = "[" + fromID + "] enters to the Chat.";
+    msgBuffer = "\33[39m[" + fromID + "] enters to the Chat.";
   }
   else if(mtype == MsgType::BYE){
-    msgBuffer = "[" + fromID + "] exits from the Chat.";
+    msgBuffer = "\33[39m[" + fromID + "] exits from the Chat.";
   }
   else if(mtype == MsgType::WHISP){
-    msgBuffer = "[DM_" + fromID + "] " + msgBuffer;
+    msgBuffer = csptr->get_FontFrame() + "[DM_" + fromID + "] " + msgBuffer;
   }
   else if(mtype == MsgType::BROAD){
-    msgBuffer = "[" + fromID + "] " + msgBuffer;
+    msgBuffer = csptr->get_FontFrame() + "[" + fromID + "] " + msgBuffer;
   }
   else{
     msgBuffer = "";
   }
   return msgBuffer;
 }
-
 
 void Message::clear(){
   fromSd = -1;
