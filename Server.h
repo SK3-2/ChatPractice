@@ -103,7 +103,7 @@ class Message{
 		string msgBuffer;
 		string fromID;
 		string tokenMsg(string, int);
-		Message::MsgType parseMsg(string buf);
+		Message::MsgType parseMsg();
 	public:    
 		void set_Msg(int,string);
 		bool isSetting() const;

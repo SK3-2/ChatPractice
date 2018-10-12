@@ -5,14 +5,14 @@ void Message::set_Msg(int index, string buf){
   fromIndex = index;
   cout<<"setMsg: "<<buf<<endl;
   msgBuffer = buf;
-  mtype = parseMsg(msgBuffer);
+  mtype = parseMsg();
   return;
 }
 
-Message::MsgType Message::parseMsg(string buf){
+Message::MsgType Message::parseMsg(){
   MsgType type;
-  if(buf.compare(0,1,"/")==0){
-    if(buf.compare(1,2,"id")==0)
+  if(msgBuffer.compare(0,1,"/")==0){
+    if(msgBuffer.compare(1,2,"id")==0)
       type = MsgType::GREET;   
     else 
       type = MsgType::SET;  //SET인 경우는, Command를 추가로 비교
