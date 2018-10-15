@@ -101,7 +101,7 @@ string Message::get_MsgFrame(ClientSession* csptr){
     msgBuffer = "\33[39m[" + fromID + "] exits from the Chat.";
   }
   else if(mtype == MsgType::WHISP){
-    msgBuffer = csptr->get_FontFrame() + "[DM_" + fromID + "] " + msgBuffer;
+    msgBuffer = csptr->get_FontFrame() + "[DM_" + fromID + "] " + msgBuffer.substr(4);
   }
   else if(mtype == MsgType::BROAD){
     msgBuffer = csptr->get_FontFrame() + "[" + fromID + "] " + msgBuffer;
