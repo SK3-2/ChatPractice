@@ -1,0 +1,160 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BROAD	Server.h	/^    enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+BROAD	Server_h.h	/^		enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+BUFMAX	Server.h	11;"	d
+BUFMAX	Server_ClientManager.cpp	13;"	d	file:
+BUFMAX	Server_ClientManager_orig.cpp	13;"	d	file:
+BUFMAX	Server_h.h	11;"	d
+BYE	Server.h	/^    enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+BYE	Server_h.h	/^		enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+CMMAX	Server.h	14;"	d
+CMMAX	Server_ClientManager.cpp	15;"	d	file:
+CMMAX	Server_ClientManager_orig.cpp	15;"	d	file:
+CMMAX	Server_h.h	14;"	d
+CSession	Server.h	/^    ClientSession* CSession[MAXINST];           $/;"	m	class:ClientManager
+CSession	Server_h.h	/^		ClientSession* CSession[MAXINST]={NULL};           $/;"	m	class:ClientManager
+ClientManager	Server.h	/^class ClientManager{                              $/;"	c
+ClientManager	Server_ClientManager.cpp	/^ClientManager::ClientManager(PollManager* ptr_p){$/;"	f	class:ClientManager
+ClientManager	Server_ClientManager_orig.cpp	/^ClientManager::ClientManager(){}$/;"	f	class:ClientManager
+ClientManager	Server_ClientManager_orig.cpp	/^ClientManager::ClientManager(PollManager* ptr_t){$/;"	f	class:ClientManager
+ClientManager	Server_h.h	/^class ClientManager{                              $/;"	c
+ClientSession	Server.h	/^class ClientSession{              $/;"	c
+ClientSession	Server_ClientSession.cpp	/^ClientSession::ClientSession() : index(-1), mysd(-1){strcpy(buftemp,"");};$/;"	f	class:ClientSession
+ClientSession	Server_ClientSession.cpp	/^ClientSession::ClientSession(int index_t, int sd) : index(index_t), mysd(sd){strcpy(buftemp,"");};$/;"	f	class:ClientSession
+ClientSession	Server_ClientSession.cpp	/^ClientSession::ClientSession(int index_t, int sd, string myID_t) : index(index_t), mysd(sd) {$/;"	f	class:ClientSession
+ClientSession	Server_h.h	/^class ClientSession{              $/;"	c
+GREET	Server.h	/^    enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+GREET	Server_h.h	/^		enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+IDMAX	Server.h	13;"	d
+IDMAX	Server_ClientManager.cpp	14;"	d	file:
+IDMAX	Server_ClientManager_orig.cpp	14;"	d	file:
+IDMAX	Server_h.h	13;"	d
+MAXINST	Server.h	12;"	d
+MAXINST	Server_h.h	12;"	d
+MAXLINE	Client.c	12;"	d	file:
+MAX_SOCK	Client.c	13;"	d	file:
+Message	Server.h	/^class Message{$/;"	c
+Message	Server_h.h	/^class Message{$/;"	c
+MsgType	Server.h	/^    enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	c	class:Message
+MsgType	Server_h.h	/^		enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	c	class:Message
+Name	Client.c	/^  char Name[20];$/;"	m	struct:profile	file:
+Parser	Server_Parser.cpp	/^int Parser(string buf,ClientManager* cmptr) {$/;"	f
+PollManager	Server.h	/^class PollManager{$/;"	c
+PollManager	Server_PollManager.cpp	/^PollManager::PollManager(int sd, Message* ptr): serverfd(sd){$/;"	f	class:PollManager
+PollManager	Server_h.h	/^class PollManager{$/;"	c
+WHISP	Server.h	/^    enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+WHISP	Server_h.h	/^		enum class MsgType {GREET,BYE,WHISP,BROAD,EMPTY};$/;"	m	class:Message::MsgType
+accept_Pollfd	Server_PollManager.cpp	/^int PollManager::accept_Pollfd(int sd){$/;"	f	class:PollManager
+broadMsg	Server_ClientManager.cpp	/^void ClientManager::broadMsg(Message* Msg){$/;"	f	class:ClientManager
+broadcast_Message	Server_ClientManager.cpp	/^void ClientManager:: broadcast_Message(string Message, int index) {$/;"	f	class:ClientManager
+broadcast_Message	Server_ClientManager_orig.cpp	/^void ClientManager:: broadcast_Message(string Message, int index) {$/;"	f	class:ClientManager
+buf	Server.h	/^    string buf;                                    $/;"	m	class:ClientManager
+buf	Server_h.h	/^		string buf;                                    $/;"	m	class:ClientManager
+buftemp	Server.h	/^    char buftemp[BUFMAX];$/;"	m	class:PollManager
+buftemp	Server_h.h	/^		char buftemp[BUFMAX];$/;"	m	class:ClientManager
+buftemp	Server_h.h	/^		char buftemp[BUFMAX];$/;"	m	class:ClientSession
+buftemp	Server_h.h	/^		char buftemp[BUFMAX];$/;"	m	class:PollManager
+chat_usr	Client.c	/^} chat_usr;$/;"	v	typeref:struct:profile
+clear	Server.h	/^void Message::clear(){$/;"	f	class:Message
+clear	Server_Message.cpp	/^void Message::clear(){$/;"	f	class:Message
+close_Pollfd	Server_PollManager.cpp	/^void PollManager::close_Pollfd(int index){$/;"	f	class:PollManager
+close_Session	Server_ClientManager.cpp	/^void ClientManager::close_Session(Message* Msg){$/;"	f	class:ClientManager
+cmptr	Server.h	/^    ClientManager* cmptr;$/;"	m	class:PollManager
+cmptr	Server_h.h	/^		ClientManager* cmptr;$/;"	m	class:PollManager
+color	Server.h	/^    int color = 39; \/\/default(white)    $/;"	m	class:ClientSession
+color	Server_h.h	/^		int color = 39; \/\/default(white)    $/;"	m	class:ClientSession
+create_Server	Server_createServer.cpp	/^int create_Server(int port) $/;"	f
+do_Poll	Server_PollManager.cpp	/^void PollManager::do_Poll(void){$/;"	f	class:PollManager
+esc	Client.c	/^char *esc = "exit\\n";$/;"	v
+fromID	Server.h	/^    string fromID;$/;"	m	class:Message
+fromID	Server_h.h	/^		string fromID;$/;"	m	class:Message
+fromIndex	Server.h	/^    int fromIndex;$/;"	m	class:Message
+fromIndex	Server_h.h	/^		int fromIndex;$/;"	m	class:Message
+fromSd	Server.h	/^    int fromSd;$/;"	m	class:Message
+fromSd	Server_h.h	/^		int fromSd;$/;"	m	class:Message
+g_pollfd	Server.h	/^    struct pollfd g_pollfd[MAXINST];  $/;"	m	class:PollManager	typeref:struct:PollManager::pollfd
+g_pollfd	Server_h.h	/^		struct pollfd g_pollfd[MAXINST];  $/;"	m	class:PollManager	typeref:struct:PollManager::pollfd
+getColor	Server.h	/^string Message::getColor(){$/;"	f	class:Message
+getColor	Server_Message.cpp	/^string Message::getColor(){$/;"	f	class:Message
+getCommand	Server_Message.cpp	/^string Message::getCommand(){$/;"	f	class:Message
+getFromID	Server.h	/^string Message::getFromID(){$/;"	f	class:Message
+getFromID	Server_Message.cpp	/^string Message::getFromID(){$/;"	f	class:Message
+getFromIndex	Server_Message.cpp	/^int Message::getFromIndex(){$/;"	f	class:Message
+getFromSd	Server_Message.cpp	/^int Message::getFromSd(){$/;"	f	class:Message
+getToID	Server.h	/^string Message::getToID(){$/;"	f	class:Message
+getToID	Server_Message.cpp	/^string Message::getToID(){$/;"	f	class:Message
+get_Color	Server_ClientSession.cpp	/^int ClientSession::get_Color() {$/;"	f	class:ClientSession
+get_EmptyPfdIndex	Server_PollManager.cpp	/^int PollManager::get_EmptyPfdIndex(void){$/;"	f	class:PollManager
+get_FontFrame	Server_ClientSession.cpp	/^string ClientSession::get_FontFrame(int color)$/;"	f	class:ClientSession
+get_MsgFrame	Server_Message.cpp	/^string Message::get_MsgFrame(){$/;"	f	class:Message
+get_NextPollfd	Server_PollManager.cpp	/^struct pollfd* PollManager::get_NextPollfd(struct pollfd* cur){$/;"	f	class:PollManager
+get_NextReventPoll	Server_PollManager.cpp	/^struct pollfd* PollManager::get_NextReventPoll(struct pollfd* pfd){$/;"	f	class:PollManager
+get_broadcast_message_frame	Server_ClientManager_orig.cpp	/^string ClientManager:: get_broadcast_message_frame(string convs, int index) {$/;"	f	class:ClientManager
+get_bye_message_frame	Server_ClientManager_orig.cpp	/^string ClientManager:: get_bye_message_frame(int index) {$/;"	f	class:ClientManager
+get_greeting_message_frame	Server_ClientManager_orig.cpp	/^string ClientManager:: get_greeting_message_frame(int index) {$/;"	f	class:ClientManager
+get_key_by_ID	Server_ClientManager.cpp	/^int ClientManager:: get_key_by_ID(string ID) {$/;"	f	class:ClientManager
+get_key_by_ID	Server_ClientManager_orig.cpp	/^int ClientManager:: get_key_by_ID(string ID) {$/;"	f	class:ClientManager
+get_myID	Server_ClientSession.cpp	/^string ClientSession::get_myID() {$/;"	f	class:ClientSession
+get_mysd	Server_ClientSession.cpp	/^int ClientSession::get_mysd() {$/;"	f	class:ClientSession
+get_private_message_ID	Server_ClientManager_orig.cpp	/^string ClientManager::get_private_message_ID(string msg) {$/;"	f	class:ClientManager
+get_private_message_frame	Server_ClientManager_orig.cpp	/^string ClientManager:: get_private_message_frame(string buf, string private_message_ID, int index) {$/;"	f	class:ClientManager
+get_registration_ID	Server_ClientManager_orig.cpp	/^string ClientManager::get_registration_ID(string msg) {$/;"	f	class:ClientManager
+index	Server.h	/^    int index;$/;"	m	class:ClientSession
+index	Server_h.h	/^		int index;$/;"	m	class:ClientSession
+isEmpty	Server.h	/^bool Message::isEmpty(){$/;"	f	class:Message
+isEmpty	Server_Message.cpp	/^bool Message::isEmpty(){$/;"	f	class:Message
+isSetID	Server_Message.cpp	/^bool Message::isSetID(){$/;"	f	class:Message
+isSetting	Server.h	/^bool Message::isSetting(){$/;"	f	class:Message
+isSetting	Server_Message.cpp	/^bool Message::isSetting(){$/;"	f	class:Message
+isWhisper	Server.h	/^bool Message::isWhisper(){$/;"	f	class:Message
+isWhisper	Server_Message.cpp	/^bool Message::isWhisper(){$/;"	f	class:Message
+len	Client.c	/^  int len;$/;"	m	struct:profile	file:
+main	Client.c	/^int main(int argc, char *argv[])$/;"	f
+main	Server_main.cpp	/^int main(int argc,char* argv[]){$/;"	f
+main	colortest.cc	/^int main(void){$/;"	f
+mptr	Server_h.h	/^		Message* mptr;$/;"	m	class:PollManager
+msgBuffer	Server.h	/^    string msgBuffer;$/;"	m	class:Message
+msgBuffer	Server_h.h	/^		string msgBuffer;$/;"	m	class:Message
+mtype	Server.h	/^    MsgType mtype = EMPTY; $/;"	m	class:Message
+mtype	Server_h.h	/^		MsgType mtype = MsgType::BROAD;$/;"	m	class:Message
+myID	Server.h	/^    string myID="";$/;"	m	class:ClientSession
+myID	Server_h.h	/^		string myID="";$/;"	m	class:ClientSession
+mysd	Server.h	/^    int mysd;$/;"	m	class:ClientSession
+mysd	Server_h.h	/^		int mysd;$/;"	m	class:ClientSession
+nread	Server.h	/^    int nread = 0;$/;"	m	class:PollManager
+nread	Server_h.h	/^		int nread = 0;$/;"	m	class:PollManager
+number	Server.h	/^    int number=0;$/;"	m	class:ClientManager
+number	Server_h.h	/^		int number=0;$/;"	m	class:ClientManager
+pmptr	Server.h	/^    PollManager* pmptr;                         $/;"	m	class:ClientManager
+pmptr	Server_h.h	/^		PollManager* pmptr;                         $/;"	m	class:ClientManager
+pollfd_end	Server.h	/^    const struct pollfd* pollfd_end = &g_pollfd[MAXINST-1];$/;"	m	class:PollManager	typeref:struct:PollManager::pollfd
+pollfd_end	Server_h.h	/^		const struct pollfd* pollfd_end = &g_pollfd[MAXINST-1];$/;"	m	class:PollManager	typeref:struct:PollManager::pollfd
+private_message_ID	Server.h	/^    string private_message_ID;                    $/;"	m	class:ClientManager
+private_message_ID	Server_h.h	/^		string private_message_ID;                    $/;"	m	class:ClientManager
+profile	Client.c	/^struct profile{ $/;"	s	file:
+readline	readline.c	/^int readline(int fd, char *ptr, int maxlen) { $/;"	f
+recvMsg	Server_PollManager.cpp	/^string PollManager::recvMsg(int fd) {$/;"	f	class:PollManager
+register_ClientManager	Server_PollManager.cpp	/^int PollManager::register_ClientManager(ClientManager* ptr){$/;"	f	class:PollManager
+register_ID	Server_ClientManager.cpp	/^void ClientManager::register_ID(Message* Msg){$/;"	f	class:ClientManager
+register_Pollfd	Server_PollManager.cpp	/^void PollManager::register_Pollfd() {$/;"	f	class:PollManager
+respond_Poll	Server_ClientManager_orig.cpp	/^void ClientManager::respond_Poll(int my_index, int sd, int N){$/;"	f	class:ClientManager
+sendMsg	Server_ClientSession.cpp	/^int ClientSession::sendMsg(string buf) {$/;"	f	class:ClientSession
+serverfd	Server.h	/^    int serverfd;$/;"	m	class:PollManager
+serverfd	Server_h.h	/^		int serverfd;$/;"	m	class:PollManager
+setFromID	Server_Message.cpp	/^void Message::setFromID(string ID){$/;"	f	class:Message
+setMsg	Server_ClientManager.cpp	/^void ClientManager::setMsg(Message* Msg){$/;"	f	class:ClientManager
+set_Color	Server_ClientSession.cpp	/^void ClientSession::set_Color(int ncolor){ $/;"	f	class:ClientSession
+set_Msg	Server.h	/^void Message::set_Msg(int sd, int index, string buf){$/;"	f	class:Message
+set_Msg	Server_Message.cpp	/^void Message::set_Msg(int sd, int index, string buf){$/;"	f	class:Message
+set_MsgFrame	Server.h	/^string Message::set_MsgFrame(string buf, MsgType mtype){$/;"	f	class:Message
+set_myID	Server_ClientSession.cpp	/^void ClientSession::set_myID(string ID) {$/;"	f	class:ClientSession
+set_mysd	Server_ClientSession.cpp	/^void ClientSession::set_mysd(int mysd_t) {$/;"	f	class:ClientSession
+tokenMsg	Server.h	/^string Message::tokenMsg(string buf,int order){$/;"	f	class:Message
+tokenMsg	Server_Message.cpp	/^string Message::tokenMsg(string buf,int order){$/;"	f	class:Message
+whispMsg	Server_ClientManager.cpp	/^void ClientManager::whispMsg(Message* Msg){$/;"	f	class:ClientManager
+~ClientSession	Server_ClientSession.cpp	/^ClientSession::~ClientSession() {$/;"	f	class:ClientSession

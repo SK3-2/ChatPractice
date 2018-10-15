@@ -7,6 +7,10 @@ int readline(int fd, char *ptr, int maxlen) {
 
   for(n = 1; n < maxlen; n++) { 
     if((rc = read(fd, &c, 1)) == 1) { 
+      if (c == '\n' && n==1) {
+				*ptr++ = ' '; 
+				break;
+			}
       if (c == '\n') break; 
       *ptr++ = c; 
     }
