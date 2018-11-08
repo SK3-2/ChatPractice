@@ -110,19 +110,19 @@ class Message{
 		bool isSetID() const;
 		bool isWhisper() const;
 		bool isEmpty() const;
-		
+
 		string getToID();
 		string getAskedID();
-		
+
 		int getFromIndex();
-		
+
 		string getCommand();
 		string getValue();
-		
+
 		void clear();
 		string get_MsgBuf();
 		string get_MsgFrame(ClientSession*);
-		
+
 		void setFromID(string);
 };
 
