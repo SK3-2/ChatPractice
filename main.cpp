@@ -5,12 +5,19 @@
 using namespace std;
 
 int main(int argc,char* argv[]){
+  
+	if(argc < 2) {
+		printf("Usage: %s [TCP_PORT]\n",argv[0]);
+		exit(1);
+	}
   int port_in =  atoi(argv[1]);
-  int CreateServer(int);
 
   //server socket open 
   int sd;
-  if ((sd = CreateServer(port_in)) == -1) return -1;
+  if ((sd = CreateServer(port_in)) == -1) {
+  	printf("Not available TCP_PORT\n");
+  	exit(1);
+  }
   cout<<"티맥스 대화방 초기화중..."<<endl;
   //Message 생성
 	Message Msg;
