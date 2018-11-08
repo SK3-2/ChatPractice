@@ -126,4 +126,4 @@ class Message{
 		void setFromID(string);
 };
 
-
+int CreateServer(int);
