@@ -4,7 +4,6 @@ int readline(int fd, char *ptr, int maxlen) {
   int n, rc; 
   char c; 
 
-
   for(n = 1; n < maxlen; n++) { 
     if((rc = read(fd, &c, 1)) == 1) { 
       if (c == '\n' && n==1) {
