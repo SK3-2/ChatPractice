@@ -79,7 +79,9 @@ string Message::tokenMsg(string buf,int order){
 
   for(int i=0; i<order; i++){
     head = cur;
-    cur = buf.find(" ",cur);
+    cur = buf.find(" ",cur+1);
+		cout<<"cur: "<<cur<<endl;
+		cout<<"head: "<<head<<endl;
     if(cur == -1){
       // 방어코드가 필요함, 원하는 token 개수 만큼 안 들어왔을 때.
       cur = buf.find("\n");
